@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "lostark")
-public record LostArkProperties(String apiKey, String baseUrl, List<WatchItem> watchItems) {
+public record LostArkProperties(String apiKey, String baseUrl, double priceChangeThresholdPercent, List<WatchItem> watchItems) {
 
 	public record WatchItem(String name, long code) {
 	}
