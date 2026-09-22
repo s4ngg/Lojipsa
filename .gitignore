@@ -1,9 +1,19 @@
+# common
 .env
 .env.local
 *.log
-build/
-.gradle/
-out/
-target/
 .idea/
+.vscode/
+
+# backend (gradle/java)
+backend/build/
+backend/.gradle/
+backend/out/
+backend/target/
 *.iml
+
+# frontend (node/next)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
