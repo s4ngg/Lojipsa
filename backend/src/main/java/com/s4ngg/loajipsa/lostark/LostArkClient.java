@@ -1,13 +1,22 @@
 package com.s4ngg.loajipsa.lostark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @Component
 public class LostArkClient {
+
+	private static final int MAX_ATTEMPTS = 3;
+	private static final Duration RETRY_DELAY = Duration.ofMillis(500);
 
 	private final RestClient restClient;
 
@@ -18,12 +27,48 @@ public class LostArkClient {
 			.build();
 	}
 
+	/**
+	 * 5xx/네트워크 오류처럼 일시적일 가능성이 있는 실패만 재시도한다.
+	 * 401/429 같은 클라이언트 오류는 재시도해도 해결되지 않으므로 바로 예외를 던져
+	 * 호출부(스케줄러)가 해당 아이템만 건너뛰게 한다.
+	 */
 	public List<MarketItemPrice> getMarketItemPrice(long itemCode) {
-		return restClient.get()
-			.uri("/markets/items/{itemCode}", itemCode)
-			.retrieve()
-			.body(new ParameterizedTypeReference<List<MarketItemPrice>>() {
-			});
+		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+			try {
+				return restClient.get()
+					.uri("/markets/items/{itemCode}", itemCode)
+					.retrieve()
+					.body(new ParameterizedTypeReference<List<MarketItemPrice>>() {
+					});
+			}
+			catch (HttpClientErrorException.TooManyRequests e) {
+				log.warn("Lost Ark API 호출 한도 초과 (itemCode={}), 이번 조회는 건너뜁니다", itemCode);
+				throw e;
+			}
+			catch (HttpClientErrorException e) {
+				log.warn("Lost Ark API 클라이언트 오류 (itemCode={}, status={})", itemCode, e.getStatusCode());
+				throw e;
+			}
+			catch (HttpServerErrorException | ResourceAccessException e) {
+				if (attempt == MAX_ATTEMPTS) {
+					throw e;
+				}
+				log.warn("Lost Ark API 호출 실패, {}/{}번째 재시도 예정 (itemCode={}, cause={})",
+					attempt, MAX_ATTEMPTS, itemCode, e.getMessage());
+				sleep(RETRY_DELAY.multipliedBy(attempt));
+			}
+		}
+		throw new IllegalStateException("unreachable");
+	}
+
+	private void sleep(Duration duration) {
+		try {
+			Thread.sleep(duration.toMillis());
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new IllegalStateException("Lost Ark API 재시도 대기 중 인터럽트됨", e);
+		}
 	}
 
 }
