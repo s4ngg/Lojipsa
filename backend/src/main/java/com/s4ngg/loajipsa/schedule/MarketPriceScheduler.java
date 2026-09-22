@@ -30,8 +30,18 @@ public class MarketPriceScheduler {
 			}
 			try {
 				var result = lostArkClient.getMarketItemPrice(item.code());
-				slackNotifier.send(item.name() + " 시세 조회 결과: " + result);
-				// TODO: 이전 조회값과 비교해서 변동폭이 클 때만 알림 보내도록 개선 (현재는 매번 발송)
+				if (result.isEmpty() || result.get(0).stats().isEmpty()) {
+					log.warn("{} 시세 데이터가 비어 있습니다 (itemCode={})", item.name(), item.code());
+					continue;
+				}
+
+				var stats = result.get(0).stats();
+				var latest = stats.get(0);
+				String message = stats.size() > 1
+					? "%s: %.1f골드 (%s 기준, 전일 %.1f골드)".formatted(item.name(), latest.avgPrice(), latest.date(), stats.get(1).avgPrice())
+					: "%s: %.1f골드 (%s 기준)".formatted(item.name(), latest.avgPrice(), latest.date());
+				slackNotifier.send(message);
+				// TODO: 변동폭이 일정 % 이상일 때만 알림 보내도록 개선 (현재는 매번 발송)
 			}
 			catch (Exception e) {
 				log.error("{} 시세 조회 실패", item.name(), e);

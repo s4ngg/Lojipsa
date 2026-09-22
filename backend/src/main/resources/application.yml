@@ -13,8 +13,10 @@ lostark:
   api-key: ${LOSTARK_API_KEY}
   base-url: https://developer-lostark.game.onstove.com
   watch-items:
-    - name: "TODO: 감시할 아이템명 (Swagger에서 아이템 코드 확인 후 채우기)"
-      code: 0
+    - name: "정제된 파괴강석"
+      code: 66102005
+    - name: "정제된 수호강석"
+      code: 66102105
 
 schedule:
   homework-reminder-cron: "0 0 6 * * *"
