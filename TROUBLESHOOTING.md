@@ -66,3 +66,34 @@ Jackson 파싱 실패를 한 곳에서 로그만 남기고 넘어가도록 정�
 
 정상 컴파일 및 실행 확인. Spring Boot 4 계열 프로젝트에서는 익숙한 Jackson 2 API를 그대로 가정하면
 안 되고, 의존성 트리를 먼저 확인하는 습관이 필요하다는 걸 체감했다.
+
+---
+
+## 3) 관리자 인증을 넣었더니 로그인 자체가 CORS 에러로 실패
+
+**문제 상황**
+
+관리자 페이지에 비밀번호 인증(`Authorization: Bearer {ADMIN_TOKEN}`)을 추가했는데, 프론트에서
+틀린 비밀번호를 넣어도 "비밀번호가 틀렸습니다"가 아니라 "백엔드에 연결할 수 없습니다"라는
+엉뚱한 에러만 떴다. curl로는 401이 정상적으로 왔다.
+
+**원인 분석**
+
+fetch가 던진 에러가 401이 아니라 다른 종류인가 싶어 브라우저 콘솔을 열어보니
+"Response to preflight request doesn't pass access control check: It does not have HTTP ok status"
+라는 CORS 에러였다. 커스텀 헤더(Authorization)를 쓰는 요청은 브라우저가 먼저 OPTIONS
+preflight를 보내는데, 이 OPTIONS 요청에는 당연히 Authorization 헤더가 없다. 그런데 관리자
+인증 인터셉터가 `/api/admin/**` 경로의 모든 메서드를 걸러내도록 등록돼 있어서, 이 OPTIONS
+요청까지 401로 막아버리고 있었다. 그 결과 브라우저는 preflight 단계에서 이미 실패로 판단하고
+실제 GET 요청 자체를 보내지도 않았다 — curl은 preflight 개념이 없어서 GET을 바로 보내니
+정상적으로 401이 보였던 것이다.
+
+**해결 방법**
+
+인터셉터의 `preHandle`에서 요청 메서드가 `OPTIONS`이면 인증 검사 없이 바로 통과시키도록
+분기를 추가했다. 실제 인증은 여전히 GET 요청에서만 걸린다.
+
+**결과**
+
+브라우저에서 오답/정답 로그인 흐름을 직접 재현해 정상 동작 확인. curl로 백엔드만 따로
+테스트했을 때는 못 잡는, 브라우저의 CORS preflight 특성 때문에 생기는 문제였다.
