@@ -1,15 +1,20 @@
-import { Boxes, Calendar, Coins, Package, Sword } from 'lucide-react'
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Bell, Boxes, Calendar, Coins, Package, Sword } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
   label: string
   icon: React.ComponentType<{ className?: string }>
-  active?: boolean
+  href?: string
   disabled?: boolean
 }
 
 const items: NavItem[] = [
-  { label: '숙제·시세 알림', icon: Coins, active: true },
+  { label: '숙제·시세 알림', icon: Coins, href: '/admin' },
+  { label: '일정 알리미', icon: Bell, href: '/admin/events' },
   { label: '숙제 관리', icon: Calendar, disabled: true },
   { label: '재련 계산', icon: Sword, disabled: true },
   { label: '재료 시세', icon: Package, disabled: true },
@@ -17,6 +22,8 @@ const items: NavItem[] = [
 ]
 
 export function DashboardSidebar() {
+  const pathname = usePathname()
+
   return (
     <aside className="flex w-44 shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="flex h-11 items-center gap-2 border-b border-border px-3">
@@ -34,28 +41,34 @@ export function DashboardSidebar() {
         </p>
         {items.map((item) => {
           const Icon = item.icon
+          const active = item.href !== undefined && item.href === pathname
+          const className = cn(
+            'flex items-center gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors',
+            active && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
+            !active && !item.disabled && 'text-sidebar-foreground hover:bg-sidebar-accent/60',
+            item.disabled && 'cursor-default text-muted-foreground/40',
+          )
+
+          if (item.disabled || !item.href) {
+            return (
+              <button key={item.label} type="button" disabled className={className}>
+                <Icon className="size-3.5 shrink-0" />
+                <span>{item.label}</span>
+              </button>
+            )
+          }
+
           return (
-            <button
+            <Link
               key={item.label}
-              type="button"
-              disabled={item.disabled}
-              aria-current={item.active ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors',
-                item.active &&
-                  'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
-                !item.active &&
-                  !item.disabled &&
-                  'text-sidebar-foreground hover:bg-sidebar-accent/60',
-                item.disabled && 'cursor-default text-muted-foreground/40',
-              )}
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+              className={className}
             >
               <Icon className="size-3.5 shrink-0" />
               <span>{item.label}</span>
-              {item.active && (
-                <span className="ml-auto size-1.5 rounded-full bg-up" />
-              )}
-            </button>
+              {active && <span className="ml-auto size-1.5 rounded-full bg-up" />}
+            </Link>
           )
         })}
       </nav>
