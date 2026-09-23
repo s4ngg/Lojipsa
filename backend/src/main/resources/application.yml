@@ -27,6 +27,13 @@ events:
     - "항해"
   reminder-minutes-before: 10
 
+notice:
+  anthropic-api-key: ${ANTHROPIC_API_KEY:}
+  watched-types:
+    - "공지"
+    - "점검"
+  max-content-chars: 3000
+
 schedule:
   homework-reminder-cron: "0 0 6 * * *"
   market-check-cron: "0 */30 * * * *"
@@ -34,6 +41,7 @@ schedule:
   # cron을 바꾸면 이 값도 같이 바꿔야 한다.
   market-check-interval-seconds: 1800
   event-check-cron: "0 * * * * *"
+  notice-check-cron: "0 */15 * * * *"
 
 app:
   cors:
