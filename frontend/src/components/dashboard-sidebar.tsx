@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, Boxes, Calendar, Coins, Package, Sword } from 'lucide-react'
+import { Bell, Boxes, Calendar, Coins, Megaphone, Package, Sword } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
@@ -15,6 +15,7 @@ type NavItem = {
 const items: NavItem[] = [
   { label: '숙제·시세 알림', icon: Coins, href: '/admin' },
   { label: '일정 알리미', icon: Bell, href: '/admin/events' },
+  { label: '공지 요약', icon: Megaphone, href: '/admin/notices' },
   { label: '숙제 관리', icon: Calendar, disabled: true },
   { label: '재련 계산', icon: Sword, disabled: true },
   { label: '재료 시세', icon: Package, disabled: true },
