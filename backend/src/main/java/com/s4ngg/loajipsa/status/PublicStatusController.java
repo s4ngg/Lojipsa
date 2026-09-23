@@ -11,7 +11,7 @@ public class PublicStatusController {
 
 	@GetMapping("/api/public/status")
 	public PublicStatus status() {
-		return new PublicStatus("로아집사", "online");
+		return new PublicStatus("숙제·시세 알림", "online");
 	}
 
 	public record PublicStatus(String agent, String status) {

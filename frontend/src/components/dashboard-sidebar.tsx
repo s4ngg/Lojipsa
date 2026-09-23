@@ -9,7 +9,7 @@ type NavItem = {
 }
 
 const items: NavItem[] = [
-  { label: '로아집사', icon: Coins, active: true },
+  { label: '숙제·시세 알림', icon: Coins, active: true },
   { label: '숙제 관리', icon: Calendar, disabled: true },
   { label: '재련 계산', icon: Sword, disabled: true },
   { label: '재료 시세', icon: Package, disabled: true },

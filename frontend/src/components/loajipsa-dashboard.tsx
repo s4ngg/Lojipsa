@@ -75,7 +75,7 @@ export function LoajipsaDashboard({
         <div className="flex items-center gap-2 text-[12px]">
           <span className="text-muted-foreground">관리자</span>
           <span className="text-muted-foreground/50">/</span>
-          <span className="font-medium">로아집사</span>
+          <span className="font-medium">숙제·시세 알림</span>
           {status && !error && (
             <span className="ml-1 flex items-center gap-1 text-[11px] text-up">
               <span className="size-1.5 rounded-full bg-up" />

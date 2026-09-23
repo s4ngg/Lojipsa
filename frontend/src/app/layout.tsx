@@ -8,7 +8,7 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 
 export const metadata: Metadata = {
   title: 'Lojipsa — 로스트아크 유틸리티',
-  description: '로아집사 · 로스트아크 숙제/시세 자동 감시 도구',
+  description: '로스트아크 유저를 위한 AI 에이전트 모음',
 }
 
 export const viewport: Viewport = {

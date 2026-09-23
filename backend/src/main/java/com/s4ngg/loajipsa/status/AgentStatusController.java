@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 프론트엔드 대시보드가 그대로 그릴 수 있는 형태로 로아집사의 현재 상태를 내려준다.
+ * 프론트엔드 대시보드가 그대로 그릴 수 있는 형태로 "숙제·시세 알림" 도구의 현재 상태를 내려준다.
  * Lost Ark API를 매번 호출하지 않고, 스케줄러가 이미 관찰/기록해둔 값만 읽는다.
  */
 @RestController
@@ -49,7 +49,7 @@ public class AgentStatusController {
 			.orElse(null);
 
 		return new AgentStatusResponse(
-			"로아집사",
+			"숙제·시세 알림",
 			"online",
 			lastCheckedAt,
 			checkIntervalSeconds,

@@ -24,7 +24,7 @@ export default async function Page() {
           <div className="flex items-center gap-2 text-[12px]">
             <span className="text-muted-foreground">도구</span>
             <span className="text-muted-foreground/50">/</span>
-            <span className="font-medium">로아집사</span>
+            <span className="font-medium">숙제·시세 알림</span>
             <span
               className={cn(
                 'ml-1 flex items-center gap-1 text-[11px]',
