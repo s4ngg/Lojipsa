@@ -34,7 +34,7 @@ public class AgentStatusController {
 		this.checkIntervalSeconds = checkIntervalSeconds;
 	}
 
-	@GetMapping("/api/status")
+	@GetMapping("/api/admin/status")
 	public AgentStatusResponse status() {
 		List<AgentStatusResponse.WatchedItemView> items = lostArkProperties.watchItems().stream()
 			.map(this::toView)

@@ -29,3 +29,6 @@ schedule:
 app:
   cors:
     allowed-origins: http://localhost:3000
+
+admin:
+  token: ${ADMIN_TOKEN:}

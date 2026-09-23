@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fetchAgentStatus, type AgentStatus } from '@/lib/api'
+import { AdminAuthError, fetchAdminStatus, type AgentStatus } from '@/lib/api'
 import { LoajipsaPanel } from '@/components/loajipsa-panel'
 
 const POLL_INTERVAL_MS = 30_000
@@ -16,7 +16,7 @@ function formatRelative(iso: string | null): string {
   return `${hours}시간 전`
 }
 
-function formatCountdown(lastCheckedAt: string | null, intervalSeconds: number, tick: number): string {
+function formatCountdown(lastCheckedAt: string | null, intervalSeconds: number): string {
   if (!lastCheckedAt || intervalSeconds <= 0) return '--:--'
   const elapsed = (Date.now() - new Date(lastCheckedAt).getTime()) / 1000
   const remaining = Math.max(0, Math.round(intervalSeconds - (elapsed % intervalSeconds)))
@@ -25,23 +25,34 @@ function formatCountdown(lastCheckedAt: string | null, intervalSeconds: number, 
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export function LoajipsaDashboard() {
+export function LoajipsaDashboard({
+  token,
+  onAuthError,
+}: {
+  token: string
+  onAuthError: () => void
+}) {
   const [status, setStatus] = useState<AgentStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [tick, setTick] = useState(0)
+  const [, setTick] = useState(0)
 
   useEffect(() => {
     let cancelled = false
 
     async function load() {
       try {
-        const data = await fetchAgentStatus()
+        const data = await fetchAdminStatus(token)
         if (!cancelled) {
           setStatus(data)
           setError(null)
         }
-      } catch {
-        if (!cancelled) setError('백엔드에 연결할 수 없습니다')
+      } catch (e) {
+        if (cancelled) return
+        if (e instanceof AdminAuthError) {
+          onAuthError()
+          return
+        }
+        setError('백엔드에 연결할 수 없습니다')
       }
     }
 
@@ -51,7 +62,7 @@ export function LoajipsaDashboard() {
       cancelled = true
       clearInterval(pollId)
     }
-  }, [])
+  }, [token, onAuthError])
 
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 1000)
@@ -62,7 +73,7 @@ export function LoajipsaDashboard() {
     <>
       <header className="flex h-11 shrink-0 items-center justify-between border-b border-border px-4">
         <div className="flex items-center gap-2 text-[12px]">
-          <span className="text-muted-foreground">도구</span>
+          <span className="text-muted-foreground">관리자</span>
           <span className="text-muted-foreground/50">/</span>
           <span className="font-medium">로아집사</span>
           {status && !error && (
@@ -96,7 +107,7 @@ export function LoajipsaDashboard() {
           <LoajipsaPanel
             watchedItems={status.watchedItems}
             recentActivity={status.recentActivity}
-            countdownLabel={formatCountdown(status.lastCheckedAt, status.checkIntervalSeconds, tick)}
+            countdownLabel={formatCountdown(status.lastCheckedAt, status.checkIntervalSeconds)}
             countdownActive={!error}
           />
         )}
