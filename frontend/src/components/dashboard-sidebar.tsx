@@ -22,7 +22,11 @@ const items: NavItem[] = [
   { label: '보석 계산', icon: Boxes, disabled: true },
 ]
 
-export function DashboardSidebar() {
+/**
+ * variant="public": 공개 페이지에서는 실행 중인 도구도 "운영중"만 보여주고 클릭은 막는다.
+ * 관리자 라우트(/admin/*)로의 링크를 일반 방문자에게 노출하지 않기 위함.
+ */
+export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'public' }) {
   const pathname = usePathname()
 
   return (
@@ -42,19 +46,24 @@ export function DashboardSidebar() {
         </p>
         {items.map((item) => {
           const Icon = item.icon
-          const active = item.href !== undefined && item.href === pathname
+          const isRunningTool = !item.disabled && !!item.href
+          const isLinkable = variant === 'admin' && isRunningTool
+          const active = isLinkable && item.href === pathname
+
           const className = cn(
             'flex items-center gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors',
             active && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
-            !active && !item.disabled && 'text-sidebar-foreground hover:bg-sidebar-accent/60',
-            item.disabled && 'cursor-default text-muted-foreground/40',
+            !active && isLinkable && 'text-sidebar-foreground hover:bg-sidebar-accent/60',
+            !isLinkable && isRunningTool && 'cursor-default text-sidebar-foreground',
+            !isRunningTool && 'cursor-default text-muted-foreground/40',
           )
 
-          if (item.disabled || !item.href) {
+          if (!isLinkable) {
             return (
               <button key={item.label} type="button" disabled className={className}>
                 <Icon className="size-3.5 shrink-0" />
                 <span>{item.label}</span>
+                {isRunningTool && <span className="ml-auto size-1.5 rounded-full bg-up" />}
               </button>
             )
           }
@@ -62,7 +71,7 @@ export function DashboardSidebar() {
           return (
             <Link
               key={item.label}
-              href={item.href}
+              href={item.href!}
               aria-current={active ? 'page' : undefined}
               className={className}
             >
