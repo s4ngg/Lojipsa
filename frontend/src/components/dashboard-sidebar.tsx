@@ -9,6 +9,8 @@ type NavItem = {
   label: string
   icon: React.ComponentType<{ className?: string }>
   href?: string
+  /** 'admin'(기본값): 관리자 로그인 상태에서만 이동 가능. 'public': 누구나 이동 가능한 사이트 도구. */
+  access?: 'admin' | 'public'
   disabled?: boolean
 }
 
@@ -17,14 +19,14 @@ const items: NavItem[] = [
   { label: '일정 알리미', icon: Bell, href: '/admin/events' },
   { label: '공지 요약', icon: Megaphone, href: '/admin/notices' },
   { label: '숙제 관리', icon: Calendar, disabled: true },
-  { label: '재련 계산', icon: Sword, disabled: true },
+  { label: '재련 계산', icon: Sword, href: '/tools/reforge', access: 'public' },
   { label: '재료 시세', icon: Package, disabled: true },
   { label: '보석 계산', icon: Boxes, disabled: true },
 ]
 
 /**
- * variant="public": 공개 페이지에서는 실행 중인 도구도 "운영중"만 보여주고 클릭은 막는다.
- * 관리자 라우트(/admin/*)로의 링크를 일반 방문자에게 노출하지 않기 위함.
+ * variant="public": 공개 페이지에서는 관리자 전용 도구도 "운영중" 표시만 하고 클릭은 막는다.
+ * access="public"인 도구(계산기 등)는 로그인 없이 어디서나 이동 가능하다.
  */
 export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'public' }) {
   const pathname = usePathname()
@@ -46,16 +48,17 @@ export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'p
         </p>
         {items.map((item) => {
           const Icon = item.icon
-          const isRunningTool = !item.disabled && !!item.href
-          const isLinkable = variant === 'admin' && isRunningTool
+          const isPublicTool = item.access === 'public'
+          const isAdminTool = !item.disabled && !!item.href && !isPublicTool
+          const isLinkable = !item.disabled && !!item.href && (isPublicTool || variant === 'admin')
           const active = isLinkable && item.href === pathname
 
           const className = cn(
             'flex items-center gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors',
             active && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
             !active && isLinkable && 'text-sidebar-foreground hover:bg-sidebar-accent/60',
-            !isLinkable && isRunningTool && 'cursor-default text-sidebar-foreground',
-            !isRunningTool && 'cursor-default text-muted-foreground/40',
+            !isLinkable && isAdminTool && 'cursor-default text-sidebar-foreground',
+            !isLinkable && !isAdminTool && 'cursor-default text-muted-foreground/40',
           )
 
           if (!isLinkable) {
@@ -63,7 +66,7 @@ export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'p
               <button key={item.label} type="button" disabled className={className}>
                 <Icon className="size-3.5 shrink-0" />
                 <span>{item.label}</span>
-                {isRunningTool && <span className="ml-auto size-1.5 rounded-full bg-up" />}
+                {isAdminTool && <span className="ml-auto size-1.5 rounded-full bg-up" />}
               </button>
             )
           }
