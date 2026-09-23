@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * 마지막으로 알림을 보낸 시점의 가격을 아이템별로 파일에 저장한다.
+ * 아이템별 최신 관찰가/마지막 알림가를 파일에 저장한다.
  * DB를 두기엔 이른 단계라 로컬 JSON 파일로 간단히 관리한다.
  */
 @Slf4j
@@ -21,30 +22,40 @@ public class PriceHistoryStore {
 	private static final Path STORE_FILE = Path.of("data", "price-history.json");
 
 	private final ObjectMapper objectMapper;
-	private final Map<Long, Double> lastAlertedPrice;
+	private final Map<Long, ItemPriceState> state;
 
 	public PriceHistoryStore(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
-		this.lastAlertedPrice = load();
+		this.state = load();
 	}
 
-	public Optional<Double> getLastAlertedPrice(long itemCode) {
-		return Optional.ofNullable(lastAlertedPrice.get(itemCode));
+	public Optional<ItemPriceState> get(long itemCode) {
+		return Optional.ofNullable(state.get(itemCode));
 	}
 
-	public synchronized void updateLastAlertedPrice(long itemCode, double price) {
-		lastAlertedPrice.put(itemCode, price);
+	/** 매 조회마다 관찰가를 갱신한다 (알림 발송 여부와 무관). */
+	public synchronized void recordObservation(long itemCode, double price) {
+		Double alertedPrice = Optional.ofNullable(state.get(itemCode))
+			.map(ItemPriceState::lastAlertedPrice)
+			.orElse(null);
+		state.put(itemCode, new ItemPriceState(price, Instant.now().toString(), alertedPrice));
 		save();
 	}
 
-	private Map<Long, Double> load() {
+	/** 실제로 Slack 알림을 보낸 시점의 가격을 기준값으로 갱신한다. */
+	public synchronized void recordAlert(long itemCode, double price) {
+		state.put(itemCode, new ItemPriceState(price, Instant.now().toString(), price));
+		save();
+	}
+
+	private Map<Long, ItemPriceState> load() {
 		if (!Files.exists(STORE_FILE)) {
 			return new HashMap<>();
 		}
 		try {
-			Map<String, Double> raw = objectMapper.readValue(STORE_FILE.toFile(),
-				objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, Double.class));
-			Map<Long, Double> result = new HashMap<>();
+			Map<String, ItemPriceState> raw = objectMapper.readValue(STORE_FILE.toFile(),
+				objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, ItemPriceState.class));
+			Map<Long, ItemPriceState> result = new HashMap<>();
 			raw.forEach((key, value) -> result.put(Long.parseLong(key), value));
 			return result;
 		}
@@ -57,7 +68,7 @@ public class PriceHistoryStore {
 	private void save() {
 		try {
 			Files.createDirectories(STORE_FILE.getParent());
-			objectMapper.writeValue(STORE_FILE.toFile(), lastAlertedPrice);
+			objectMapper.writeValue(STORE_FILE.toFile(), state);
 		}
 		catch (Exception e) {
 			log.error("가격 이력 파일 저장 실패", e);

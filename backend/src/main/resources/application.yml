@@ -22,3 +22,10 @@ lostark:
 schedule:
   homework-reminder-cron: "0 0 6 * * *"
   market-check-cron: "0 */30 * * * *"
+  # market-check-cron과 동일한 주기를 초 단위로도 들고 있는다 (프론트 카운트다운용).
+  # cron을 바꾸면 이 값도 같이 바꿔야 한다.
+  market-check-interval-seconds: 1800
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000

@@ -1,6 +1,7 @@
 package com.s4ngg.loajipsa.schedule;
 
 import com.s4ngg.loajipsa.slack.SlackNotifier;
+import com.s4ngg.loajipsa.status.ActivityLogStore;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +12,11 @@ import java.time.LocalDate;
 public class HomeworkReminderScheduler {
 
 	private final SlackNotifier slackNotifier;
+	private final ActivityLogStore activityLogStore;
 
-	public HomeworkReminderScheduler(SlackNotifier slackNotifier) {
+	public HomeworkReminderScheduler(SlackNotifier slackNotifier, ActivityLogStore activityLogStore) {
 		this.slackNotifier = slackNotifier;
+		this.activityLogStore = activityLogStore;
 	}
 
 	@Scheduled(cron = "${schedule.homework-reminder-cron:0 0 6 * * *}")
@@ -28,6 +31,7 @@ public class HomeworkReminderScheduler {
 		}
 
 		slackNotifier.send(message.toString());
+		activityLogStore.append("숙제 체크리스트 알림 발송");
 	}
 
 }
