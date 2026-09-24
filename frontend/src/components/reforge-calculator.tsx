@@ -24,7 +24,7 @@ function expectedAttempts(successRatePercent: number): number {
 
 function fmt(n: number) {
   if (!isFinite(n)) return '—'
-  return n.toLocaleString('ko-KR', { maximumFractionDigits: 1 })
+  return Math.round(n).toLocaleString('ko-KR')
 }
 
 export function ReforgeCalculator() {

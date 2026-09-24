@@ -65,13 +65,29 @@ export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'p
               const isLinkable = !item.disabled && !!item.href && (isPublicTool || variant === 'admin')
               const active = isLinkable && item.href === pathname
 
+              const isComingSoon = !!item.disabled
+
               const className = cn(
                 'flex items-center gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors',
                 active && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
                 !active && isLinkable && 'text-sidebar-foreground hover:bg-sidebar-accent/60',
                 !isLinkable && isAdminTool && 'cursor-default text-sidebar-foreground',
-                !isLinkable && !isAdminTool && 'cursor-default text-muted-foreground/40',
+                !isLinkable && isComingSoon && 'text-muted-foreground/40 hover:bg-sidebar-accent/60',
               )
+
+              if (isComingSoon) {
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => alert('준비중인 기능입니다.')}
+                    className={className}
+                  >
+                    <Icon className="size-3.5 shrink-0" />
+                    <span>{item.label}</span>
+                  </button>
+                )
+              }
 
               if (!isLinkable) {
                 return (
