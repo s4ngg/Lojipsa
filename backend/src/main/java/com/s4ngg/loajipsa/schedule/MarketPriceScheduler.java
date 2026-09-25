@@ -67,6 +67,19 @@ public class MarketPriceScheduler {
 			return;
 		}
 
+		if (lastAlertedPrice == 0) {
+			// 이전 알림 가격이 0이면 변동률이 나눗셈 불능(Infinity/NaN)이 되므로 퍼센트 없이 안내한다.
+			if (currentPrice == 0) {
+				log.debug("{} 여전히 0골드, 알림 생략", item.name());
+				return;
+			}
+			String message = "%s 시세 변동: %.1f골드 (이전 0골드에서 변동)".formatted(item.name(), currentPrice);
+			slackNotifier.send(message);
+			activityLogStore.append(message);
+			priceHistoryStore.recordAlert(item.code(), currentPrice);
+			return;
+		}
+
 		double changePercent = (currentPrice - lastAlertedPrice) / lastAlertedPrice * 100;
 		if (Math.abs(changePercent) < properties.priceChangeThresholdPercent()) {
 			log.debug("{} 변동폭 {}%로 임계값 미만, 알림 생략", item.name(), changePercent);
