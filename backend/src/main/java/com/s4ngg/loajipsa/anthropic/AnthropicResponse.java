@@ -1,4 +1,4 @@
-package com.s4ngg.loajipsa.notice;
+package com.s4ngg.loajipsa.anthropic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

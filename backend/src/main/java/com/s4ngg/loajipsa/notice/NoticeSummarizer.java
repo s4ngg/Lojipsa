@@ -1,28 +1,19 @@
 package com.s4ngg.loajipsa.notice;
 
-import lombok.extern.slf4j.Slf4j;
+import com.s4ngg.loajipsa.anthropic.AnthropicClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
-import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Component
 public class NoticeSummarizer {
 
-	private static final String MODEL = "claude-haiku-4-5-20251001";
-
-	private final RestClient restClient;
+	private final AnthropicClient anthropicClient;
 	private final NoticeProperties properties;
 
-	public NoticeSummarizer(NoticeProperties properties) {
+	public NoticeSummarizer(AnthropicClient anthropicClient, NoticeProperties properties) {
+		this.anthropicClient = anthropicClient;
 		this.properties = properties;
-		this.restClient = RestClient.builder()
-			.baseUrl("https://api.anthropic.com")
-			.defaultHeader("x-api-key", properties.anthropicApiKey())
-			.defaultHeader("anthropic-version", "2023-06-01")
-			.build();
 	}
 
 	/**
@@ -44,34 +35,7 @@ public class NoticeSummarizer {
 			%s
 			""".formatted(title, truncated);
 
-		AnthropicRequest request = new AnthropicRequest(
-			MODEL,
-			300,
-			List.of(new AnthropicRequest.AnthropicMessage("user", prompt))
-		);
-
-		try {
-			long start = System.currentTimeMillis();
-			AnthropicResponse response = restClient.post()
-				.uri("/v1/messages")
-				.body(request)
-				.retrieve()
-				.body(AnthropicResponse.class);
-			long elapsedMs = System.currentTimeMillis() - start;
-
-			if (response == null || response.content().isEmpty()) {
-				return Optional.empty();
-			}
-
-			log.info("공지 요약 완료 ({}ms, input={}tok, output={}tok)",
-				elapsedMs, response.usage().inputTokens(), response.usage().outputTokens());
-
-			return Optional.of(response.content().get(0).text().trim());
-		}
-		catch (Exception e) {
-			log.error("공지 요약 실패, 원문 제목만 사용", e);
-			return Optional.empty();
-		}
+		return anthropicClient.complete(prompt, 300);
 	}
 
 }

@@ -2,7 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bell, Boxes, Calendar, Coins, Megaphone, Package, ScrollText, Sword } from 'lucide-react'
+import {
+  Bell,
+  Boxes,
+  Calendar,
+  Coins,
+  Compass,
+  Megaphone,
+  Package,
+  ScrollText,
+  Sword,
+  Users,
+  Wallet,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
@@ -19,17 +31,27 @@ const toolItems: NavItem[] = [
   { label: '일정 알리미', icon: Bell, href: '/admin/events' },
   { label: '공지 요약', icon: Megaphone, href: '/admin/notices' },
   { label: '레이드 보상 관리', icon: ScrollText, href: '/admin/raid-rewards' },
-  { label: '숙제 관리', icon: Calendar, disabled: true },
+  { label: '재료 시세 관리', icon: Package, href: '/admin/materials' },
+  { label: '보석 시세 관리', icon: Boxes, href: '/admin/gems' },
+  { label: '원정대 방향성 관리', icon: Compass, href: '/admin/direction-knowledge' },
   { label: '재련 계산', icon: Sword, href: '/tools/reforge', access: 'public' },
-  { label: '재료 시세', icon: Package, disabled: true },
-  { label: '보석 계산', icon: Boxes, disabled: true },
 ]
 
 const infoItems: NavItem[] = [
   { label: '레이드 보상', icon: ScrollText, href: '/info/raid-rewards', access: 'public' },
+  { label: '재료 시세', icon: Package, href: '/info/materials', access: 'public' },
+  { label: '보석 시세', icon: Boxes, href: '/info/gems', access: 'public' },
+]
+
+const accountItems: NavItem[] = [
+  { label: '내 공격대', icon: Users, href: '/my', access: 'public' },
+  { label: '주간 골드 계산', icon: Wallet, href: '/my/weekly-gold', access: 'public' },
+  { label: '숙제 관리', icon: Calendar, href: '/my/homework', access: 'public' },
+  { label: '원정대 방향성', icon: Compass, href: '/my/direction', access: 'public' },
 ]
 
 const groups = [
+  { title: '내 정보', items: accountItems },
   { title: '도구', items: toolItems },
   { title: '정보', items: infoItems },
 ]

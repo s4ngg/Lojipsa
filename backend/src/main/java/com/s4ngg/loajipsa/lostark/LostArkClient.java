@@ -10,6 +10,7 @@ import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Slf4j
 @Component
@@ -33,28 +34,44 @@ public class LostArkClient {
 	 * 호출부(스케줄러)가 해당 아이템만 건너뛰게 한다.
 	 */
 	public List<MarketItemPrice> getMarketItemPrice(long itemCode) {
+		return executeWithRetry("itemCode=" + itemCode, () -> restClient.get()
+			.uri("/markets/items/{itemCode}", itemCode)
+			.retrieve()
+			.body(new ParameterizedTypeReference<List<MarketItemPrice>>() {
+			}));
+	}
+
+	/**
+	 * 경매장(보석/장신구 등 개별 아이템) 검색. 거래소(/markets)와 달리 일별 평균가 이력이 없고,
+	 * 검색 시점의 매물 목록만 내려온다.
+	 */
+	public AuctionSearchResponse searchAuctionItems(AuctionSearchRequest request) {
+		return executeWithRetry("auction search: " + request.itemName(), () -> restClient.post()
+			.uri("/auctions/items")
+			.body(request)
+			.retrieve()
+			.body(AuctionSearchResponse.class));
+	}
+
+	private <T> T executeWithRetry(String label, Supplier<T> call) {
 		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			try {
-				return restClient.get()
-					.uri("/markets/items/{itemCode}", itemCode)
-					.retrieve()
-					.body(new ParameterizedTypeReference<List<MarketItemPrice>>() {
-					});
+				return call.get();
 			}
 			catch (HttpClientErrorException.TooManyRequests e) {
-				log.warn("Lost Ark API 호출 한도 초과 (itemCode={}), 이번 조회는 건너뜁니다", itemCode);
+				log.warn("Lost Ark API 호출 한도 초과 ({}), 이번 조회는 건너뜁니다", label);
 				throw e;
 			}
 			catch (HttpClientErrorException e) {
-				log.warn("Lost Ark API 클라이언트 오류 (itemCode={}, status={})", itemCode, e.getStatusCode());
+				log.warn("Lost Ark API 클라이언트 오류 ({}, status={})", label, e.getStatusCode());
 				throw e;
 			}
 			catch (HttpServerErrorException | ResourceAccessException e) {
 				if (attempt == MAX_ATTEMPTS) {
 					throw e;
 				}
-				log.warn("Lost Ark API 호출 실패, {}/{}번째 재시도 예정 (itemCode={}, cause={})",
-					attempt, MAX_ATTEMPTS, itemCode, e.getMessage());
+				log.warn("Lost Ark API 호출 실패, {}/{}번째 재시도 예정 ({}, cause={})",
+					attempt, MAX_ATTEMPTS, label, e.getMessage());
 				sleep(RETRY_DELAY.multipliedBy(attempt));
 			}
 		}

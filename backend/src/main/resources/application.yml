@@ -2,8 +2,10 @@ spring:
   application:
     name: loajipsa
   datasource:
-    url: jdbc:h2:file:./data/lojipsa;AUTO_SERVER=TRUE
-    driver-class-name: org.h2.Driver
+    url: ${DB_URL:jdbc:h2:file:./data/lojipsa;AUTO_SERVER=TRUE}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
   jpa:
     hibernate:
       # 솔로 프로젝트 단계라 엔티티 변경 시 스키마 자동 반영. 나중에 데이터 중요해지면 Flyway로 교체.
@@ -36,11 +38,13 @@ events:
   reminder-minutes-before: 10
 
 notice:
-  anthropic-api-key: ${ANTHROPIC_API_KEY:}
   watched-types:
     - "공지"
     - "점검"
   max-content-chars: 3000
+
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY:}
 
 schedule:
   homework-reminder-cron: "0 0 6 * * *"
@@ -53,7 +57,17 @@ schedule:
 
 app:
   cors:
-    allowed-origins: http://localhost:3000
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
 admin:
   token: ${ADMIN_TOKEN:}
+
+discord:
+  client-id: ${DISCORD_CLIENT_ID:}
+  client-secret: ${DISCORD_CLIENT_SECRET:}
+  redirect-uri: ${DISCORD_REDIRECT_URI:http://localhost:8080/api/auth/discord/callback}
+  frontend-redirect-url: ${DISCORD_FRONTEND_REDIRECT_URL:http://localhost:3000/my}
+
+jwt:
+  secret: ${JWT_SECRET:}
+  expiration-hours: 720

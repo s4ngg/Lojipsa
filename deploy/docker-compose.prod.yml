@@ -1,0 +1,11 @@
+# EC2 서버에서 사용. 리포를 클론한 뒤 backend/.env.prod (아래 .env.prod.example 참고)를
+# 채우고 이 파일 기준으로 실행: docker compose -f deploy/docker-compose.prod.yml up -d --build
+services:
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    env_file:
+      - ../backend/.env.prod
+    ports:
+      - "8080:8080"

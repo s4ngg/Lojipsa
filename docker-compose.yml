@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: lojipsa
+      POSTGRES_USER: lojipsa
+      POSTGRES_PASSWORD: lojipsa_local_only
+    ports:
+      - "5432:5432"
+    volumes:
+      - lojipsa-postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - postgres
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/lojipsa
+      DB_DRIVER: org.postgresql.Driver
+      DB_USERNAME: lojipsa
+      DB_PASSWORD: lojipsa_local_only
+    ports:
+      - "8080:8080"
+
+volumes:
+  lojipsa-postgres-data:
