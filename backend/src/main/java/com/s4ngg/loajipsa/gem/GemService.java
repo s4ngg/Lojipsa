@@ -61,7 +61,9 @@ public class GemService {
 			AuctionSearchResponse response = lostArkClient
 				.searchAuctionItems(AuctionSearchRequest.byName(GEM_CATEGORY_CODE, gem.getItemName()));
 
-			OptionalDouble lowestBuyPrice = response.items().stream()
+			List<AuctionSearchResponse.AuctionItem> items = response.items() == null ? List.of() : response.items();
+
+			OptionalDouble lowestBuyPrice = items.stream()
 				.map(AuctionSearchResponse.AuctionItem::auctionInfo)
 				.map(AuctionSearchResponse.AuctionInfo::buyPrice)
 				.filter(price -> price != null && price > 0)
@@ -69,7 +71,12 @@ public class GemService {
 				.min();
 
 			Double lowest = lowestBuyPrice.isPresent() ? lowestBuyPrice.getAsDouble() : null;
-			return Optional.of(new GemPriceSnapshot(gem.getId(), gem.getItemName(), lowest, response.totalCount()));
+			String iconUrl = items.stream()
+				.map(AuctionSearchResponse.AuctionItem::icon)
+				.filter(icon -> icon != null && !icon.isBlank())
+				.findFirst()
+				.orElse(null);
+			return Optional.of(new GemPriceSnapshot(gem.getId(), gem.getItemName(), lowest, response.totalCount(), iconUrl));
 		}
 		catch (Exception e) {
 			log.error("{} 경매장 시세 조회 실패", gem.getItemName(), e);

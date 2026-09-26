@@ -19,6 +19,7 @@ public record AuctionSearchResponse(
 	public record AuctionItem(
 		@JsonProperty("Name") String name,
 		@JsonProperty("Grade") String grade,
+		@JsonProperty("Icon") String icon,
 		@JsonProperty("AuctionInfo") AuctionInfo auctionInfo
 	) {
 	}

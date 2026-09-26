@@ -77,6 +77,7 @@ export type GemPriceSnapshot = {
   itemName: string
   lowestBuyPrice: number | null
   listingCount: number
+  iconUrl: string | null
 }
 
 export type HomeworkSetupMode = 'AUTO_BOUND_AND_TRADABLE' | 'AUTO_TRADABLE_ONLY' | 'MANUAL'
