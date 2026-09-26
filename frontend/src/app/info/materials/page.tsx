@@ -1,5 +1,6 @@
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { cn } from '@/lib/utils'
+import { Package, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import type { MaterialPriceComparison } from '@/lib/api'
 
 async function getMaterialPrices(): Promise<MaterialPriceComparison[]> {
@@ -20,8 +21,14 @@ function changeColor(change: number | null) {
   return 'text-muted-foreground'
 }
 
+function ChangeIcon({ change }: { change: number | null }) {
+  if (change === null || change === 0) return <Minus className="size-4" />
+  if (change > 0) return <TrendingUp className="size-4" />
+  return <TrendingDown className="size-4" />
+}
+
 function changeLabel(change: number | null) {
-  if (change === null) return '—'
+  if (change === null) return '변동 없음'
   const sign = change > 0 ? '+' : ''
   return `${sign}${change.toFixed(1)}%`
 }
@@ -34,60 +41,57 @@ export default async function MaterialsInfoPage() {
       <DashboardSidebar variant="public" />
 
       <main className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-11 shrink-0 items-center gap-2 border-b border-border px-4 text-[12px]">
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-5 text-[15px]">
           <span className="text-muted-foreground">정보</span>
           <span className="text-muted-foreground/50">/</span>
-          <span className="font-medium">재료 시세</span>
+          <span className="font-semibold">재료 시세</span>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="mb-3 rounded-md border border-border bg-card px-3 py-2 text-[11px] text-muted-foreground">
+        <div className="flex-1 overflow-y-auto p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h1 className="text-lg font-bold">재료 시세 (1주일 비교)</h1>
+            <span className="text-[13px] text-muted-foreground">{materials.length}개 항목</span>
+          </div>
+
+          <div className="mb-4 rounded-lg border border-border bg-card px-4 py-2.5 text-[13px] text-muted-foreground">
             오늘 평균가와 1주일 전 평균가를 비교합니다. 거래소 API가 최근 2주치 일별
             시세를 제공해서, 정확히 7일 전 데이터가 없으면 가장 가까운 날짜로 비교합니다.
           </div>
 
-          <section className="overflow-hidden rounded-md border border-border bg-card">
-            <header className="flex items-center justify-between border-b border-border px-3 py-2">
-              <h2 className="text-[12px] font-semibold">재료 시세 (1주일 비교)</h2>
-              <span className="font-mono text-[11px] text-muted-foreground">
-                {materials.length}개 항목
-              </span>
-            </header>
-            <table className="w-full border-collapse text-[12px]">
-              <thead>
-                <tr className="text-[11px] text-muted-foreground">
-                  <th className="px-3 py-1.5 text-left font-medium">아이템</th>
-                  <th className="px-3 py-1.5 text-right font-medium">현재가</th>
-                  <th className="px-3 py-1.5 text-right font-medium">1주일 전</th>
-                  <th className="px-3 py-1.5 text-right font-medium">변동률</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-3 py-4 text-center text-[11.5px] text-muted-foreground">
-                      등록된 재료 시세 정보가 없습니다.
-                    </td>
-                  </tr>
-                )}
-                {materials.map((m) => (
-                  <tr key={m.id} className="border-t border-border/60 hover:bg-secondary/50">
-                    <td className="px-3 py-1.5">{m.itemName}</td>
-                    <td className="px-3 py-1.5 text-right font-mono tabular-nums">
-                      {m.currentPrice.toLocaleString('ko-KR')}
-                      <span className="ml-1 text-[10px] text-muted-foreground">G</span>
-                    </td>
-                    <td className="px-3 py-1.5 text-right font-mono tabular-nums text-muted-foreground">
-                      {m.weekAgoPrice === null ? '—' : m.weekAgoPrice.toLocaleString('ko-KR')}
-                    </td>
-                    <td className={cn('px-3 py-1.5 text-right font-mono tabular-nums', changeColor(m.changePercent))}>
-                      {changeLabel(m.changePercent)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+          {materials.length === 0 && (
+            <div className="rounded-lg border border-border bg-card px-4 py-8 text-center text-[13px] text-muted-foreground">
+              등록된 재료 시세 정보가 없습니다.
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {materials.map((m) => (
+              <div
+                key={m.id}
+                className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3.5"
+              >
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary">
+                  <Package className="size-5 text-primary" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[14px] font-semibold">{m.itemName}</p>
+                  <p className="text-[16px] font-bold tabular-nums">
+                    {m.currentPrice.toLocaleString('ko-KR')}
+                    <span className="ml-1 text-[12px] font-normal text-muted-foreground">골드</span>
+                  </p>
+                  <p className="text-[12px] text-muted-foreground">
+                    1주 전 {m.weekAgoPrice === null ? '—' : `${m.weekAgoPrice.toLocaleString('ko-KR')}골드`}
+                  </p>
+                </div>
+                <div className={cn('flex flex-col items-center gap-0.5', changeColor(m.changePercent))}>
+                  <ChangeIcon change={m.changePercent} />
+                  <span className="text-[12.5px] font-semibold tabular-nums">
+                    {changeLabel(m.changePercent)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     </div>
