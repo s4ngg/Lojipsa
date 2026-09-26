@@ -63,6 +63,7 @@ export type MaterialPriceComparison = {
   weekAgoPrice: number | null
   weekAgoDate: string | null
   changePercent: number | null
+  iconUrl: string | null
 }
 
 export type TrackedGem = {

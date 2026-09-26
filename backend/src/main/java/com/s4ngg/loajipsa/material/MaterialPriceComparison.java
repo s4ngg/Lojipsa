@@ -12,6 +12,7 @@ public record MaterialPriceComparison(
 	String currentDate,
 	Double weekAgoPrice,
 	String weekAgoDate,
-	Double changePercent
+	Double changePercent,
+	String iconUrl
 ) {
 }

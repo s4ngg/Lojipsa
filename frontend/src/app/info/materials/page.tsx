@@ -70,8 +70,13 @@ export default async function MaterialsInfoPage() {
                 key={m.id}
                 className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3.5"
               >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary">
-                  <Package className="size-5 text-primary" />
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-secondary p-1.5">
+                  {m.iconUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={m.iconUrl} alt="" className="size-full object-contain" />
+                  ) : (
+                    <Package className="size-5 text-primary" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[14px] font-semibold">{m.itemName}</p>

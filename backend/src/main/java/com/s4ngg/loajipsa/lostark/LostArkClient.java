@@ -42,6 +42,18 @@ public class LostArkClient {
 	}
 
 	/**
+	 * 거래소 카테고리 내 아이템 목록 조회. GET /markets/items/{itemCode}(가격 이력)와 달리
+	 * Icon(공식 CDN 아이콘 URL)을 내려주므로, 아이콘이 필요할 때만 보조로 호출한다.
+	 */
+	public MarketSearchResponse searchMarketItems(MarketSearchRequest request) {
+		return executeWithRetry("market category=" + request.categoryCode(), () -> restClient.post()
+			.uri("/markets/items")
+			.body(request)
+			.retrieve()
+			.body(MarketSearchResponse.class));
+	}
+
+	/**
 	 * 경매장(보석/장신구 등 개별 아이템) 검색. 거래소(/markets)와 달리 일별 평균가 이력이 없고,
 	 * 검색 시점의 매물 목록만 내려온다.
 	 */
