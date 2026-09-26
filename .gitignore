@@ -15,6 +15,9 @@ backend/target/
 backend/data/
 *.iml
 
+# deploy (prod docker volume data)
+deploy/data/
+
 # frontend (node/next)
 frontend/node_modules/
 frontend/.next/

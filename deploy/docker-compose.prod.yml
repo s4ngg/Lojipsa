@@ -9,3 +9,7 @@ services:
       - ../backend/.env.prod
     ports:
       - "8080:8080"
+    volumes:
+      # PriceHistoryStore가 쓰는 data/price-history.json을 호스트에 마운트해서,
+      # docker compose up --build로 컨테이너를 재생성해도 가격 추적 이력이 유지되게 한다.
+      - ./data:/app/data
