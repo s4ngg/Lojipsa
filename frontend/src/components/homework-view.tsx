@@ -164,7 +164,7 @@ export function HomeworkView() {
   }
 
   if (!tokenReady) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (!token) {
@@ -177,19 +177,19 @@ export function HomeworkView() {
   }
 
   if (loading) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-down/30 bg-down/10 px-3 py-2 text-[12px] text-down">{error}</div>
+      <div className="rounded-md border border-down/30 bg-down/10 px-3.5 py-2.5 text-[14px] text-down">{error}</div>
     )
   }
 
   if (!roster || roster.length === 0) {
     return (
       <div className="rounded-md border border-border bg-card px-4 py-6">
-        <p className="text-[12px] text-muted-foreground">
+        <p className="text-[14px] text-muted-foreground">
           먼저{' '}
           <a href="/my" className="text-primary hover:underline">
             내 공격대
@@ -212,7 +212,7 @@ export function HomeworkView() {
   return (
     <div className="flex flex-col gap-3">
       {raidRewards.length === 0 && (
-        <div className="rounded-md border border-border bg-card px-3 py-2 text-[11px] text-muted-foreground">
+        <div className="rounded-md border border-border bg-card px-3.5 py-2.5 text-[12.5px] text-muted-foreground">
           아직 등록된 레이드 보상 정보가 없어서 자동 설정을 쓸 수 없습니다.{' '}
           <a href="/info/raid-rewards" className="text-primary hover:underline">
             레이드 보상
@@ -230,14 +230,14 @@ export function HomeworkView() {
 
         return (
           <section key={c.id} className="overflow-hidden rounded-md border border-border bg-card">
-            <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-2">
+            <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
               <div className="flex items-center gap-2">
-                <span className="text-[12px] font-medium">{c.characterName}</span>
-                <span className="font-mono text-[10.5px] text-muted-foreground">
+                <span className="text-[14px] font-medium">{c.characterName}</span>
+                <span className="font-mono text-[12px] text-muted-foreground">
                   Lv.{c.itemAvgLevel.toFixed(2)}
                 </span>
                 {characterItems.length > 0 && (
-                  <span className="font-mono text-[10.5px] text-muted-foreground">
+                  <span className="font-mono text-[12px] text-muted-foreground">
                     ({fmt(totalGold)}G 완료)
                   </span>
                 )}
@@ -247,7 +247,7 @@ export function HomeworkView() {
                   type="button"
                   onClick={() => runAutoSetup(c.id, 'AUTO_BOUND_AND_TRADABLE')}
                   disabled={busy || raidRewards.length === 0}
-                  className="h-6 rounded-sm border border-border px-2 text-[10.5px] hover:bg-secondary/60 disabled:opacity-50"
+                  className="h-10 rounded-sm border border-border px-2 text-[12px] hover:bg-secondary/60 disabled:opacity-50"
                 >
                   자동(귀속+거래가능)
                 </button>
@@ -255,7 +255,7 @@ export function HomeworkView() {
                   type="button"
                   onClick={() => runAutoSetup(c.id, 'AUTO_TRADABLE_ONLY')}
                   disabled={busy || raidRewards.length === 0}
-                  className="h-6 rounded-sm border border-border px-2 text-[10.5px] hover:bg-secondary/60 disabled:opacity-50"
+                  className="h-10 rounded-sm border border-border px-2 text-[12px] hover:bg-secondary/60 disabled:opacity-50"
                 >
                   자동(거래가능위주)
                 </button>
@@ -263,7 +263,7 @@ export function HomeworkView() {
                   type="button"
                   onClick={() => (isSetupOpen ? setSetupPanelFor(null) : openManualSetup(c.id))}
                   disabled={busy}
-                  className="h-6 rounded-sm border border-border px-2 text-[10.5px] hover:bg-secondary/60 disabled:opacity-50"
+                  className="h-10 rounded-sm border border-border px-2 text-[12px] hover:bg-secondary/60 disabled:opacity-50"
                 >
                   {isSetupOpen ? '취소' : '수동 설정'}
                 </button>
@@ -271,15 +271,15 @@ export function HomeworkView() {
             </header>
 
             {isSetupOpen && (
-              <div className="border-b border-border bg-secondary/20 px-3 py-2.5">
+              <div className="border-b border-border bg-secondary/20 px-3.5 py-3">
                 {raidRewards.length === 0 ? (
-                  <p className="text-[11px] text-muted-foreground">선택할 수 있는 레이드가 없습니다.</p>
+                  <p className="text-[12.5px] text-muted-foreground">선택할 수 있는 레이드가 없습니다.</p>
                 ) : (
                   <div className="flex flex-wrap gap-x-4 gap-y-1.5">
                     {raidRewards.map((r) => {
                       const key = selectionKey(r.raidName, r.difficulty)
                       return (
-                        <label key={key} className="flex items-center gap-1.5 text-[11px]">
+                        <label key={key} className="flex items-center gap-1.5 text-[12.5px]">
                           <input
                             type="checkbox"
                             checked={manualSelected.has(key)}
@@ -291,13 +291,13 @@ export function HomeworkView() {
                     })}
                   </div>
                 )}
-                {setupError && <p className="mt-1.5 text-[11px] text-down">{setupError}</p>}
+                {setupError && <p className="mt-1.5 text-[12.5px] text-down">{setupError}</p>}
                 <div className="mt-2 flex gap-2">
                   <button
                     type="button"
                     onClick={() => submitManualSetup(c.id)}
                     disabled={busy || raidRewards.length === 0}
-                    className="h-6 rounded-sm bg-primary px-2.5 text-[10.5px] font-medium text-primary-foreground disabled:opacity-50"
+                    className="h-10 rounded-sm bg-primary px-2.5 text-[12px] font-medium text-primary-foreground disabled:opacity-50"
                   >
                     적용
                   </button>
@@ -306,7 +306,7 @@ export function HomeworkView() {
             )}
 
             {characterItems.length === 0 && !isSetupOpen && (
-              <p className="px-3 py-3 text-[11.5px] text-muted-foreground">
+              <p className="px-4 py-3.5 text-[13px] text-muted-foreground">
                 설정된 숙제가 없습니다. 위 버튼으로 설정해주세요.
               </p>
             )}
@@ -314,7 +314,7 @@ export function HomeworkView() {
             {characterItems.length > 0 && (
               <ul className="divide-y divide-border/60">
                 {characterItems.map((item) => (
-                  <li key={item.id} className="flex items-center justify-between px-3 py-1.5 text-[12px]">
+                  <li key={item.id} className="flex items-center justify-between px-3.5 py-2 text-[14px]">
                     <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -326,13 +326,13 @@ export function HomeworkView() {
                       </span>
                     </label>
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+                      <span className="font-mono text-[12.5px] tabular-nums text-muted-foreground">
                         {fmt(item.boundGold + item.tradableGold)}G
                       </span>
                       <button
                         type="button"
                         onClick={() => handleDeleteItem(item.id)}
-                        className="text-[11px] text-down hover:underline"
+                        className="text-[12.5px] text-down hover:underline"
                       >
                         삭제
                       </button>

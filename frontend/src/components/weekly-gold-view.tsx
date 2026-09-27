@@ -96,7 +96,7 @@ export function WeeklyGoldView() {
   const grandTotal = characterGolds.reduce((sum, cg) => sum + totalForCharacter(cg), 0)
 
   if (!tokenReady) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (!token) {
@@ -109,12 +109,12 @@ export function WeeklyGoldView() {
   }
 
   if (loading) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-down/30 bg-down/10 px-3 py-2 text-[12px] text-down">
+      <div className="rounded-md border border-down/30 bg-down/10 px-3.5 py-2.5 text-[14px] text-down">
         {error}
       </div>
     )
@@ -123,7 +123,7 @@ export function WeeklyGoldView() {
   if (!roster || roster.length === 0) {
     return (
       <div className="rounded-md border border-border bg-card px-4 py-6">
-        <p className="text-[12px] text-muted-foreground">
+        <p className="text-[14px] text-muted-foreground">
           먼저{' '}
           <a href="/my" className="text-primary hover:underline">
             내 공격대
@@ -137,7 +137,7 @@ export function WeeklyGoldView() {
   if (!rewards || rewards.length === 0) {
     return (
       <div className="rounded-md border border-border bg-card px-4 py-6">
-        <p className="text-[12px] text-muted-foreground">
+        <p className="text-[14px] text-muted-foreground">
           아직 등록된 레이드 보상 정보가 없습니다.{' '}
           <a href="/info/raid-rewards" className="text-primary hover:underline">
             레이드 보상
@@ -150,19 +150,19 @@ export function WeeklyGoldView() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="rounded-md border border-border bg-card px-3 py-2 text-[11px] text-muted-foreground">
+      <div className="rounded-md border border-border bg-card px-3.5 py-2.5 text-[12.5px] text-muted-foreground">
         캐릭터별로 아이템 레벨이 충족하는 레이드 중 난이도가 가장 높은 것 하나씩만 계산합니다.
         실제 게임의 주간 골드 지급 상한(레이드 개수 제한)은 직접 확인해서 아래 "상위 N개만
         합산"에 입력해주세요 — 비워두면 등록된 레이드 전체를 합산합니다.
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card px-3 py-2.5">
+      <div className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card px-3.5 py-3">
         <div className="flex overflow-hidden rounded-sm border border-border">
           <button
             type="button"
             onClick={() => setMode('bound_and_tradable')}
             className={cn(
-              'px-2.5 py-1 text-[11px]',
+              'px-2.5 py-1 text-[12.5px]',
               mode === 'bound_and_tradable'
                 ? 'bg-primary text-primary-foreground'
                 : 'hover:bg-secondary/60',
@@ -174,7 +174,7 @@ export function WeeklyGoldView() {
             type="button"
             onClick={() => setMode('tradable_only')}
             className={cn(
-              'border-l border-border px-2.5 py-1 text-[11px]',
+              'border-l border-border px-2.5 py-1 text-[12.5px]',
               mode === 'tradable_only' ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary/60',
             )}
           >
@@ -182,7 +182,7 @@ export function WeeklyGoldView() {
           </button>
         </div>
 
-        <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <label className="flex items-center gap-1.5 text-[12.5px] text-muted-foreground">
           상위
           <input
             type="number"
@@ -190,19 +190,19 @@ export function WeeklyGoldView() {
             value={capInput}
             onChange={(e) => setCapInput(e.target.value)}
             placeholder="전체"
-            className="h-6 w-14 rounded-sm border border-border bg-background px-1.5 text-center font-mono text-[11px] outline-none focus:border-primary"
+            className="h-10 w-14 rounded-sm border border-border bg-background px-1.5 text-center font-mono text-[12.5px] outline-none focus:border-primary"
           />
           개 레이드만 합산 (비워두면 전체)
         </label>
       </div>
 
       <section className="overflow-hidden rounded-md border border-border bg-card">
-        <table className="w-full border-collapse text-[12px]">
+        <table className="w-full border-collapse text-[14px]">
           <thead>
-            <tr className="text-[11px] text-muted-foreground">
-              <th className="px-3 py-1.5 text-left font-medium">캐릭터</th>
-              <th className="px-3 py-1.5 text-left font-medium">레이드</th>
-              <th className="px-3 py-1.5 text-right font-medium">골드</th>
+            <tr className="text-[12.5px] text-muted-foreground">
+              <th className="px-3.5 py-2 text-left font-medium">캐릭터</th>
+              <th className="px-3.5 py-2 text-left font-medium">레이드</th>
+              <th className="px-3.5 py-2 text-right font-medium">골드</th>
             </tr>
           </thead>
           <tbody>
@@ -212,19 +212,19 @@ export function WeeklyGoldView() {
               return (
                 <Fragment key={cg.character.id}>
                   <tr className="border-t border-border bg-secondary/30">
-                    <td colSpan={2} className="px-3 py-1.5 font-medium">
+                    <td colSpan={2} className="px-3.5 py-2 font-medium">
                       {cg.character.characterName}
-                      <span className="ml-1.5 font-mono text-[10.5px] text-muted-foreground">
+                      <span className="ml-1.5 font-mono text-[12px] text-muted-foreground">
                         Lv.{cg.character.itemAvgLevel.toFixed(2)}
                       </span>
                     </td>
-                    <td className="px-3 py-1.5 text-right font-mono tabular-nums font-semibold">
+                    <td className="px-3.5 py-2 text-right font-mono tabular-nums font-semibold">
                       {fmt(totalForCharacter(cg))}G
                     </td>
                   </tr>
                   {cg.eligibleRaids.length === 0 && (
                     <tr>
-                      <td colSpan={3} className="px-3 py-1.5 pl-6 text-[11px] text-muted-foreground">
+                      <td colSpan={3} className="px-3.5 py-2 pl-6 text-[12.5px] text-muted-foreground">
                         클리어 가능한 등록된 레이드가 없습니다
                       </td>
                     </tr>
@@ -234,14 +234,14 @@ export function WeeklyGoldView() {
                       key={r.id}
                       className={cn('border-t border-border/40', i >= included && 'opacity-40')}
                     >
-                      <td className="px-3 py-1 pl-6" />
-                      <td className="px-3 py-1 text-muted-foreground">
+                      <td className="px-3.5 py-1.5 pl-6" />
+                      <td className="px-3.5 py-1.5 text-muted-foreground">
                         {r.raidName} · {r.difficulty}
                         {i >= included && (
-                          <span className="ml-1.5 text-[10px]">(상위 {cap}개 제외)</span>
+                          <span className="ml-1.5 text-[11.5px]">(상위 {cap}개 제외)</span>
                         )}
                       </td>
-                      <td className="px-3 py-1 text-right font-mono tabular-nums text-muted-foreground">
+                      <td className="px-3.5 py-1.5 text-right font-mono tabular-nums text-muted-foreground">
                         {fmt(r.goldForMode)}G
                       </td>
                     </tr>
@@ -252,10 +252,10 @@ export function WeeklyGoldView() {
           </tbody>
           <tfoot>
             <tr className="border-t border-border bg-secondary/50">
-              <td colSpan={2} className="px-3 py-2 font-semibold">
+              <td colSpan={2} className="px-3.5 py-2.5 font-semibold">
                 전체 합계
               </td>
-              <td className="px-3 py-2 text-right font-mono text-base font-bold tabular-nums">
+              <td className="px-3.5 py-2.5 text-right font-mono text-base font-bold tabular-nums">
                 {fmt(grandTotal)}G
               </td>
             </tr>

@@ -87,7 +87,7 @@ export function DirectionView() {
   }
 
   if (!tokenReady) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (!token) {
@@ -100,19 +100,19 @@ export function DirectionView() {
   }
 
   if (loading) {
-    return <p className="text-[12px] text-muted-foreground">불러오는 중...</p>
+    return <p className="text-[14px] text-muted-foreground">불러오는 중...</p>
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-down/30 bg-down/10 px-3 py-2 text-[12px] text-down">{error}</div>
+      <div className="rounded-md border border-down/30 bg-down/10 px-3.5 py-2.5 text-[14px] text-down">{error}</div>
     )
   }
 
   if (!roster || roster.length === 0) {
     return (
       <div className="rounded-md border border-border bg-card px-4 py-6">
-        <p className="text-[12px] text-muted-foreground">
+        <p className="text-[14px] text-muted-foreground">
           먼저{' '}
           <a href="/my" className="text-primary hover:underline">
             내 공격대
@@ -127,7 +127,7 @@ export function DirectionView() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="rounded-md border border-border bg-card px-3 py-2 text-[11px] text-muted-foreground">
+      <div className="rounded-md border border-border bg-card px-3.5 py-2.5 text-[12.5px] text-muted-foreground">
         선택한 캐릭터의 현재/목표 레벨 기준 주간 거래 가능 골드 차이와 입력한 강화 비용을 바탕으로,
         지금 강화를 진행하는 게 나을지 당분간 주차하는 게 나을지 AI가 추천해줍니다. 강화 성공률·재료
         비용은 패치마다 바뀌어서 직접 확인한 예상 비용을 입력해주세요.
@@ -135,14 +135,14 @@ export function DirectionView() {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-3 rounded-md border border-border bg-card px-3 py-3"
+        className="flex flex-col gap-3 rounded-md border border-border bg-card px-4 py-3.5"
       >
         <div className="flex flex-col gap-1">
-          <label className="text-[11px] text-muted-foreground">캐릭터</label>
+          <label className="text-[12.5px] text-muted-foreground">캐릭터</label>
           <select
             value={characterId ?? ''}
             onChange={(e) => setCharacterId(Number(e.target.value))}
-            className="h-8 rounded-sm border border-border bg-background px-2 text-[12px] outline-none focus:border-primary"
+            className="h-10 rounded-sm border border-border bg-background px-2 text-[14px] outline-none focus:border-primary"
           >
             {sortedRoster.map((c) => (
               <option key={c.id} value={c.id}>
@@ -154,59 +154,59 @@ export function DirectionView() {
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="flex flex-1 flex-col gap-1">
-            <label className="text-[11px] text-muted-foreground">목표 레벨까지 예상 강화 비용(골드)</label>
+            <label className="text-[12.5px] text-muted-foreground">목표 레벨까지 예상 강화 비용(골드)</label>
             <input
               type="number"
               min={0}
               value={honingCost}
               onChange={(e) => setHoningCost(e.target.value)}
               placeholder="예: 5000000"
-              className="h-8 rounded-sm border border-border bg-background px-2 text-[12px] outline-none focus:border-primary"
+              className="h-10 rounded-sm border border-border bg-background px-2 text-[14px] outline-none focus:border-primary"
             />
           </div>
           <div className="flex flex-1 flex-col gap-1">
-            <label className="text-[11px] text-muted-foreground">목표 아이템 레벨 (비워두면 자동)</label>
+            <label className="text-[12.5px] text-muted-foreground">목표 아이템 레벨 (비워두면 자동)</label>
             <input
               type="number"
               min={0}
               value={targetLevel}
               onChange={(e) => setTargetLevel(e.target.value)}
               placeholder="예: 1730"
-              className="h-8 rounded-sm border border-border bg-background px-2 text-[12px] outline-none focus:border-primary"
+              className="h-10 rounded-sm border border-border bg-background px-2 text-[14px] outline-none focus:border-primary"
             />
           </div>
         </div>
 
-        {submitError && <p className="text-[11px] text-down">{submitError}</p>}
+        {submitError && <p className="text-[12.5px] text-down">{submitError}</p>}
 
         <button
           type="submit"
           disabled={submitting || characterId === null}
-          className="h-8 self-start rounded-sm bg-primary px-3 text-[12px] font-medium text-primary-foreground disabled:opacity-50"
+          className="h-10 self-start rounded-sm bg-primary px-3 text-[14px] font-medium text-primary-foreground disabled:opacity-50"
         >
           {submitting ? 'AI 추천 받는 중...' : 'AI 추천 받기'}
         </button>
       </form>
 
       {result && (
-        <section className="flex flex-col gap-3 rounded-md border border-border bg-card px-3 py-3">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[12px] sm:grid-cols-4">
+        <section className="flex flex-col gap-3 rounded-md border border-border bg-card px-4 py-3.5">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-[14px] sm:grid-cols-4">
             <div>
-              <p className="text-[10.5px] text-muted-foreground">현재</p>
+              <p className="text-[12px] text-muted-foreground">현재</p>
               <p className="font-mono tabular-nums">Lv.{result.currentItemLevel.toFixed(2)}</p>
               <p className="font-mono tabular-nums text-muted-foreground">
                 {fmt(result.currentWeeklyTradableGold)}G/주
               </p>
             </div>
             <div>
-              <p className="text-[10.5px] text-muted-foreground">목표</p>
+              <p className="text-[12px] text-muted-foreground">목표</p>
               <p className="font-mono tabular-nums">Lv.{result.targetItemLevel}</p>
               <p className="font-mono tabular-nums text-muted-foreground">
                 {fmt(result.targetWeeklyTradableGold)}G/주
               </p>
             </div>
             <div>
-              <p className="text-[10.5px] text-muted-foreground">주당 증가분</p>
+              <p className="text-[12px] text-muted-foreground">주당 증가분</p>
               <p
                 className={cn(
                   'font-mono tabular-nums',
@@ -218,14 +218,14 @@ export function DirectionView() {
               </p>
             </div>
             <div>
-              <p className="text-[10.5px] text-muted-foreground">예상 강화 비용</p>
+              <p className="text-[12px] text-muted-foreground">예상 강화 비용</p>
               <p className="font-mono tabular-nums">{fmt(result.honingCostGold)}G</p>
             </div>
           </div>
 
-          <div className="rounded-md border border-primary/30 bg-primary/5 px-3 py-2.5">
-            <p className="mb-1 text-[10.5px] font-medium text-primary">AI 추천</p>
-            <p className="whitespace-pre-line text-[12.5px] leading-relaxed">{result.recommendation}</p>
+          <div className="rounded-md border border-primary/30 bg-primary/5 px-3.5 py-3">
+            <p className="mb-1 text-[12px] font-medium text-primary">AI 추천</p>
+            <p className="whitespace-pre-line text-[14.5px] leading-relaxed">{result.recommendation}</p>
           </div>
         </section>
       )}
