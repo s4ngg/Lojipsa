@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
-import { User } from 'lucide-react'
 import {
   UserAuthError,
   fetchMyRoster,
@@ -11,6 +10,7 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
+import { CharacterAvatar } from '@/components/character-avatar'
 import { cn } from '@/lib/utils'
 
 type GoldMode = 'bound_and_tradable' | 'tradable_only'
@@ -218,18 +218,10 @@ export function WeeklyGoldView() {
                   <tr className="border-t border-border bg-secondary/30">
                     <td colSpan={2} className="px-3.5 py-2 font-medium">
                       <span className="flex items-center gap-2">
-                        {cg.character.characterImageUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={cg.character.characterImageUrl}
-                            alt=""
-                            className="size-7 shrink-0 rounded-full border border-border object-cover"
-                          />
-                        ) : (
-                          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary">
-                            <User className="size-3.5 text-muted-foreground" />
-                          </span>
-                        )}
+                        <CharacterAvatar
+                          characterClassName={cg.character.characterClassName}
+                          characterImageUrl={cg.character.characterImageUrl}
+                        />
                         {cg.character.characterName}
                         <span className="font-mono text-[12px] text-muted-foreground">
                           Lv.{cg.character.itemAvgLevel.toFixed(2)}

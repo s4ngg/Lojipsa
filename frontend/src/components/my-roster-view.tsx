@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, type FormEvent } from 'react'
-import { User } from 'lucide-react'
 import {
   UserAuthError,
   fetchMyRoster,
@@ -11,6 +10,7 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
+import { CharacterAvatar } from '@/components/character-avatar'
 
 function fmtItemLevel(n: number) {
   return n.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -221,18 +221,10 @@ export function MyRosterView() {
                   <td className="px-3.5 py-2 text-muted-foreground">{c.serverName}</td>
                   <td className="px-3.5 py-2 font-medium">
                     <span className="flex items-center gap-2">
-                      {c.characterImageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={c.characterImageUrl}
-                          alt=""
-                          className="size-7 shrink-0 rounded-full border border-border object-cover"
-                        />
-                      ) : (
-                        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary">
-                          <User className="size-3.5 text-muted-foreground" />
-                        </span>
-                      )}
+                      <CharacterAvatar
+                        characterClassName={c.characterClassName}
+                        characterImageUrl={c.characterImageUrl}
+                      />
                       {c.characterName}
                     </span>
                   </td>
