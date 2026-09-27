@@ -16,6 +16,7 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
+import { ClassBadge } from '@/components/class-badge'
 import { cn } from '@/lib/utils'
 
 function fmt(n: number) {
@@ -232,6 +233,7 @@ export function HomeworkView() {
           <section key={c.id} className="overflow-hidden rounded-md border border-border bg-card">
             <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
               <div className="flex items-center gap-2">
+                <ClassBadge characterClassName={c.characterClassName} />
                 <span className="text-[14px] font-medium">{c.characterName}</span>
                 <span className="font-mono text-[12px] text-muted-foreground">
                   Lv.{c.itemAvgLevel.toFixed(2)}

@@ -10,6 +10,7 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
+import { ClassBadge } from '@/components/class-badge'
 import { cn } from '@/lib/utils'
 
 type GoldMode = 'bound_and_tradable' | 'tradable_only'
@@ -52,7 +53,8 @@ export function WeeklyGoldView() {
   const [error, setError] = useState<string | null>(null)
 
   const [mode, setMode] = useState<GoldMode>('bound_and_tradable')
-  const [capInput, setCapInput] = useState('')
+  // 캐릭터당 주간 골드는 최대 3개 레이드까지만 지급된다(사용자 확인). 필요하면 직접 바꿀 수 있게 둔다.
+  const [capInput, setCapInput] = useState('3')
 
   useEffect(() => {
     if (!token) return
@@ -152,8 +154,10 @@ export function WeeklyGoldView() {
     <div className="flex flex-col gap-3">
       <div className="rounded-md border border-border bg-card px-3.5 py-2.5 text-[12.5px] text-muted-foreground">
         캐릭터별로 아이템 레벨이 충족하는 레이드 중 난이도가 가장 높은 것 하나씩만 계산합니다.
-        실제 게임의 주간 골드 지급 상한(레이드 개수 제한)은 직접 확인해서 아래 "상위 N개만
-        합산"에 입력해주세요 — 비워두면 등록된 레이드 전체를 합산합니다.
+        캐릭터당 주간 골드는 최대 3개 레이드까지만 지급되므로, 기본값을 3으로 두고 골드가 가장 높은
+        레이드 3개만 합산합니다 — 아래 "상위 N개만 합산"에서 바꿀 수 있습니다. 귀속+거래가능 모드와
+        거래가능위주 모드는 "가장 높은 3개"의 기준이 되는 골드 종류가 달라서, 어느 쪽으로 계산하느냐에
+        따라 상위 3개 레이드 구성 자체가 바뀔 수 있습니다.
       </div>
 
       <div className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card px-3.5 py-3">
@@ -213,9 +217,12 @@ export function WeeklyGoldView() {
                 <Fragment key={cg.character.id}>
                   <tr className="border-t border-border bg-secondary/30">
                     <td colSpan={2} className="px-3.5 py-2 font-medium">
-                      {cg.character.characterName}
-                      <span className="ml-1.5 font-mono text-[12px] text-muted-foreground">
-                        Lv.{cg.character.itemAvgLevel.toFixed(2)}
+                      <span className="flex items-center gap-2">
+                        <ClassBadge characterClassName={cg.character.characterClassName} />
+                        {cg.character.characterName}
+                        <span className="font-mono text-[12px] text-muted-foreground">
+                          Lv.{cg.character.itemAvgLevel.toFixed(2)}
+                        </span>
                       </span>
                     </td>
                     <td className="px-3.5 py-2 text-right font-mono tabular-nums font-semibold">
