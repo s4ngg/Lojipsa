@@ -8,7 +8,6 @@ public record GemPriceSnapshot(
 	Long id,
 	String itemName,
 	Double lowestBuyPrice,
-	int listingCount,
 	String iconUrl
 ) {
 }

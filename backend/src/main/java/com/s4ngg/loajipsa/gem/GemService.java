@@ -76,7 +76,7 @@ public class GemService {
 				.filter(icon -> icon != null && !icon.isBlank())
 				.findFirst()
 				.orElse(null);
-			return Optional.of(new GemPriceSnapshot(gem.getId(), gem.getItemName(), lowest, response.totalCount(), iconUrl));
+			return Optional.of(new GemPriceSnapshot(gem.getId(), gem.getItemName(), lowest, iconUrl));
 		}
 		catch (Exception e) {
 			log.error("{} 경매장 시세 조회 실패", gem.getItemName(), e);

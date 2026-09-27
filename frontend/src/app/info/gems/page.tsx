@@ -1,5 +1,5 @@
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
-import { Gem, Tag } from 'lucide-react'
+import { Gem } from 'lucide-react'
 import type { GemPriceSnapshot } from '@/lib/api'
 
 async function getGemPrices(): Promise<GemPriceSnapshot[]> {
@@ -69,10 +69,6 @@ export default async function GemsInfoPage() {
                       <span className="ml-1 text-[12px] font-normal text-muted-foreground">골드</span>
                     </p>
                   )}
-                  <p className="flex items-center gap-1 text-[12px] text-muted-foreground">
-                    <Tag className="size-3" />
-                    매물 {g.listingCount.toLocaleString('ko-KR')}개
-                  </p>
                 </div>
               </div>
             ))}

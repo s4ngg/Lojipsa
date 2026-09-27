@@ -77,7 +77,6 @@ export type GemPriceSnapshot = {
   id: number
   itemName: string
   lowestBuyPrice: number | null
-  listingCount: number
   iconUrl: string | null
 }
 
