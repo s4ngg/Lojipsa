@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { User } from 'lucide-react'
 import {
   UserAuthError,
   deleteHomeworkItem,
@@ -232,6 +233,18 @@ export function HomeworkView() {
           <section key={c.id} className="overflow-hidden rounded-md border border-border bg-card">
             <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
               <div className="flex items-center gap-2">
+                {c.characterImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={c.characterImageUrl}
+                    alt=""
+                    className="size-7 shrink-0 rounded-full border border-border object-cover"
+                  />
+                ) : (
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary">
+                    <User className="size-3.5 text-muted-foreground" />
+                  </span>
+                )}
                 <span className="text-[14px] font-medium">{c.characterName}</span>
                 <span className="font-mono text-[12px] text-muted-foreground">
                   Lv.{c.itemAvgLevel.toFixed(2)}

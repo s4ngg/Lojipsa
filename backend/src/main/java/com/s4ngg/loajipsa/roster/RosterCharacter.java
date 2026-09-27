@@ -1,5 +1,6 @@
 package com.s4ngg.loajipsa.roster;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,10 @@ public class RosterCharacter {
 	private String characterClassName;
 	private double itemAvgLevel;
 	private Instant lastRefreshedAt;
+
+	/** 캐릭터 개인 초상화 URL(공식 API가 내려주는 CharacterImage). 조회 실패 시 null일 수 있다. */
+	@Column(length = 500)
+	private String characterImageUrl;
 
 	public RosterCharacter(Long discordUserId, String serverName, String characterName,
 			String characterClassName, double itemAvgLevel) {

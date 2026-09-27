@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, type FormEvent } from 'react'
+import { User } from 'lucide-react'
 import {
   UserAuthError,
   fetchMyRoster,
@@ -218,7 +219,23 @@ export function MyRosterView() {
               {sortedRoster.map((c) => (
                 <tr key={c.id} className="border-t border-border/60 hover:bg-secondary/50">
                   <td className="px-3.5 py-2 text-muted-foreground">{c.serverName}</td>
-                  <td className="px-3.5 py-2 font-medium">{c.characterName}</td>
+                  <td className="px-3.5 py-2 font-medium">
+                    <span className="flex items-center gap-2">
+                      {c.characterImageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={c.characterImageUrl}
+                          alt=""
+                          className="size-7 shrink-0 rounded-full border border-border object-cover"
+                        />
+                      ) : (
+                        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary">
+                          <User className="size-3.5 text-muted-foreground" />
+                        </span>
+                      )}
+                      {c.characterName}
+                    </span>
+                  </td>
                   <td className="px-3.5 py-2">{c.characterClassName}</td>
                   <td className="px-3.5 py-2 text-right font-mono tabular-nums">
                     {fmtItemLevel(c.itemAvgLevel)}

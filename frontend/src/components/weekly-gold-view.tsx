@@ -1,6 +1,7 @@
 'use client'
 
 import { Fragment, useEffect, useMemo, useState } from 'react'
+import { User } from 'lucide-react'
 import {
   UserAuthError,
   fetchMyRoster,
@@ -216,9 +217,23 @@ export function WeeklyGoldView() {
                 <Fragment key={cg.character.id}>
                   <tr className="border-t border-border bg-secondary/30">
                     <td colSpan={2} className="px-3.5 py-2 font-medium">
-                      {cg.character.characterName}
-                      <span className="ml-1.5 font-mono text-[12px] text-muted-foreground">
-                        Lv.{cg.character.itemAvgLevel.toFixed(2)}
+                      <span className="flex items-center gap-2">
+                        {cg.character.characterImageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={cg.character.characterImageUrl}
+                            alt=""
+                            className="size-7 shrink-0 rounded-full border border-border object-cover"
+                          />
+                        ) : (
+                          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary">
+                            <User className="size-3.5 text-muted-foreground" />
+                          </span>
+                        )}
+                        {cg.character.characterName}
+                        <span className="font-mono text-[12px] text-muted-foreground">
+                          Lv.{cg.character.itemAvgLevel.toFixed(2)}
+                        </span>
                       </span>
                     </td>
                     <td className="px-3.5 py-2 text-right font-mono tabular-nums font-semibold">

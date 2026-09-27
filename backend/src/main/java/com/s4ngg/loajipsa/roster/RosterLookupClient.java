@@ -27,4 +27,12 @@ public class RosterLookupClient {
 			});
 	}
 
+	/** 캐릭터 개인 초상화(CharacterImage) 조회용. 캐릭터마다 별도 호출이 필요하다. */
+	public CharacterProfileResponse getProfile(String characterName) {
+		return restClient.get()
+			.uri("/armories/characters/{name}/profiles", characterName)
+			.retrieve()
+			.body(CharacterProfileResponse.class);
+	}
+
 }

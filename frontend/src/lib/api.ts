@@ -124,6 +124,7 @@ export type RosterCharacter = {
   characterClassName: string
   itemAvgLevel: number
   lastRefreshedAt: string
+  characterImageUrl: string | null
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080'

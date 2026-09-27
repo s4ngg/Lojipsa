@@ -2,12 +2,14 @@ package com.s4ngg.loajipsa.roster;
 
 import com.s4ngg.loajipsa.auth.DiscordUser;
 import com.s4ngg.loajipsa.auth.DiscordUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 public class RosterService {
 
@@ -45,10 +47,26 @@ public class RosterService {
 
 		rosterRepository.deleteByDiscordUserId(user.getId());
 		List<RosterCharacter> characters = entries.stream()
-			.map(e -> new RosterCharacter(user.getId(), e.serverName(), e.characterName(),
-				e.characterClassName(), e.parsedItemAvgLevel()))
+			.map(e -> {
+				RosterCharacter character = new RosterCharacter(user.getId(), e.serverName(), e.characterName(),
+					e.characterClassName(), e.parsedItemAvgLevel());
+				character.setCharacterImageUrl(fetchCharacterImage(e.characterName()));
+				return character;
+			})
 			.toList();
 		return rosterRepository.saveAll(characters);
+	}
+
+	/** 캐릭터 초상화는 부가 정보라, 개별 캐릭터 조회가 실패해도 로스터 갱신 자체는 계속 진행한다. */
+	private String fetchCharacterImage(String characterName) {
+		try {
+			CharacterProfileResponse profile = lookupClient.getProfile(characterName);
+			return profile != null ? profile.characterImage() : null;
+		}
+		catch (Exception e) {
+			log.warn("{} 캐릭터 초상화 조회 실패", characterName, e);
+			return null;
+		}
 	}
 
 	public List<RosterCharacter> list(String discordId) {
