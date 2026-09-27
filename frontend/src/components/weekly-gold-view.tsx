@@ -10,7 +10,6 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
-import { ClassBadge } from '@/components/class-badge'
 import { cn } from '@/lib/utils'
 
 type GoldMode = 'bound_and_tradable' | 'tradable_only'
@@ -217,12 +216,9 @@ export function WeeklyGoldView() {
                 <Fragment key={cg.character.id}>
                   <tr className="border-t border-border bg-secondary/30">
                     <td colSpan={2} className="px-3.5 py-2 font-medium">
-                      <span className="flex items-center gap-2">
-                        <ClassBadge characterClassName={cg.character.characterClassName} />
-                        {cg.character.characterName}
-                        <span className="font-mono text-[12px] text-muted-foreground">
-                          Lv.{cg.character.itemAvgLevel.toFixed(2)}
-                        </span>
+                      {cg.character.characterName}
+                      <span className="ml-1.5 font-mono text-[12px] text-muted-foreground">
+                        Lv.{cg.character.itemAvgLevel.toFixed(2)}
                       </span>
                     </td>
                     <td className="px-3.5 py-2 text-right font-mono tabular-nums font-semibold">

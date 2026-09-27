@@ -10,7 +10,6 @@ import {
 } from '@/lib/api'
 import { useUserToken } from '@/lib/use-user-token'
 import { DiscordLoginPrompt } from '@/components/discord-login-prompt'
-import { ClassBadge } from '@/components/class-badge'
 
 function fmtItemLevel(n: number) {
   return n.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -219,12 +218,7 @@ export function MyRosterView() {
               {sortedRoster.map((c) => (
                 <tr key={c.id} className="border-t border-border/60 hover:bg-secondary/50">
                   <td className="px-3.5 py-2 text-muted-foreground">{c.serverName}</td>
-                  <td className="px-3.5 py-2 font-medium">
-                    <span className="flex items-center gap-2">
-                      <ClassBadge characterClassName={c.characterClassName} />
-                      {c.characterName}
-                    </span>
-                  </td>
+                  <td className="px-3.5 py-2 font-medium">{c.characterName}</td>
                   <td className="px-3.5 py-2">{c.characterClassName}</td>
                   <td className="px-3.5 py-2 text-right font-mono tabular-nums">
                     {fmtItemLevel(c.itemAvgLevel)}
