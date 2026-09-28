@@ -43,6 +43,17 @@ public class DirectionService {
 			throw new IllegalStateException("등록된 레이드 보상 정보가 없어 계산할 수 없습니다");
 		}
 
+		String context = contextRepository.findById(1L).map(RecommendationContext::getContent).orElse("");
+
+		return recommend(character, allRewards, request, context);
+	}
+
+	/**
+	 * DB에 저장된 실제 유저/캐릭터 없이도 호출할 수 있는 버전. 레이드 보상·배경지식은 실제 운영
+	 * 데이터를 그대로 넘기고, 캐릭터만 메모리상의 값(예: 피드백 에이전트의 테스트 시나리오)이어도 된다.
+	 */
+	public DirectionResponse recommend(RosterCharacter character, List<RaidReward> allRewards,
+			DirectionRequest request, String context) {
 		int currentWeeklyTradableGold = tradableGoldAt(allRewards, character.getItemAvgLevel());
 
 		int targetItemLevel = request.targetItemLevel() != null
@@ -51,8 +62,6 @@ public class DirectionService {
 
 		int targetWeeklyTradableGold = tradableGoldAt(allRewards, targetItemLevel);
 		int weeklyGoldGain = targetWeeklyTradableGold - currentWeeklyTradableGold;
-
-		String context = contextRepository.findById(1L).map(RecommendationContext::getContent).orElse("");
 
 		String recommendation = buildRecommendation(character, currentWeeklyTradableGold, targetItemLevel,
 			targetWeeklyTradableGold, weeklyGoldGain, request.honingCostGold(), context);

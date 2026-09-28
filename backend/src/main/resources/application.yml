@@ -54,6 +54,8 @@ schedule:
   market-check-interval-seconds: 1800
   event-check-cron: "0 * * * * *"
   notice-check-cron: "0 */15 * * * *"
+  # 매일 오전 9시: 원정대 방향성 추천을 합성 시나리오로 실행해보고 Claude에게 채점시킨다.
+  feedback-check-cron: "0 0 9 * * *"
 
 app:
   cors:

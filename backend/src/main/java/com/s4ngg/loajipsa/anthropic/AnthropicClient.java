@@ -51,10 +51,22 @@ public class AnthropicClient {
 				return Optional.empty();
 			}
 
+			// content[0]이 항상 text 블록이라는 보장은 없다(예: 확장 사고 등 다른 타입이 먼저
+			// 올 수 있음) — type이 "text"인 첫 블록을 찾는다. 없으면 실패로 취급한다.
+			Optional<String> text = response.content().stream()
+				.filter(block -> "text".equals(block.type()) && block.text() != null)
+				.findFirst()
+				.map(block -> block.text().trim());
+
+			if (text.isEmpty()) {
+				log.warn("Claude 응답에 text 블록이 없습니다 (content={})", response.content());
+				return Optional.empty();
+			}
+
 			log.info("Claude 호출 완료 ({}ms, input={}tok, output={}tok)",
 				elapsedMs, response.usage().inputTokens(), response.usage().outputTokens());
 
-			return Optional.of(response.content().get(0).text().trim());
+			return text;
 		}
 		catch (Exception e) {
 			log.error("Claude 호출 실패", e);
