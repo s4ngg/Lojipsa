@@ -8,6 +8,7 @@ import {
   Calendar,
   Coins,
   Compass,
+  House,
   Megaphone,
   Package,
   ScrollText,
@@ -50,18 +51,28 @@ const accountItems: NavItem[] = [
   { label: '원정대 방향성', icon: Compass, href: '/my/direction', access: 'public' },
 ]
 
+const homeItems: NavItem[] = [
+  { label: '홈', icon: House, href: '/', access: 'public' },
+]
+
 const groups = [
+  { title: '서비스', items: homeItems },
   { title: '내 정보', items: accountItems },
   { title: '도구', items: toolItems },
   { title: '정보', items: infoItems },
 ]
 
 /**
- * variant="public": 공개 페이지에서는 관리자 전용 도구도 "운영중" 표시만 하고 클릭은 막는다.
- * access="public"인 도구(계산기, 정보 탭 등)는 로그인 없이 어디서나 이동 가능하다.
+ * variant="public": 공개 페이지에는 공개 기능만 표시한다. 관리자 도구는 admin 화면에서만 노출한다.
  */
 export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'public' }) {
   const pathname = usePathname()
+  const visibleGroups = groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => variant === 'admin' || item.access === 'public'),
+    }))
+    .filter((group) => group.items.length > 0)
 
   return (
     <aside className="flex w-52 shrink-0 flex-col border-r border-border bg-sidebar">
@@ -75,7 +86,7 @@ export function DashboardSidebar({ variant = 'admin' }: { variant?: 'admin' | 'p
       </div>
 
       <nav className="flex flex-col gap-0.5 overflow-y-auto p-2.5">
-        {groups.map((group) => (
+        {visibleGroups.map((group) => (
           <div key={group.title} className="flex flex-col gap-0.5">
             <p className="px-2 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               {group.title}
