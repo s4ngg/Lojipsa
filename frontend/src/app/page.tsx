@@ -162,7 +162,7 @@ export default async function Page() {
                 직접 이용할 수 있는 기능
               </h2>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 lg:grid-cols-2">
               <Link
                 href="/my/direction"
                 className="group flex items-center gap-4 rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
