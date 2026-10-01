@@ -4,7 +4,7 @@ Claude 주간 토큰이 만료되거나 다른 AI 세션(Codex 등)으로 작업
 이 파일은 최신 상태로 유지되어야 한다 — **작업을 마칠 때(세션을 끝내기 전에) 이 파일을 업데이트할 것.**
 git에 커밋되므로 어느 도구/세션에서 열어도 항상 최신 커밋 기준 내용을 볼 수 있다.
 
-마지막 업데이트: 2026-09-28 (Codex 세션)
+마지막 업데이트: 2026-10-01 (Claude 세션)
 
 ---
 
@@ -100,6 +100,25 @@ Slack 알림 에이전트 (스케줄러 있음, `/admin/*`):
 
 ## 지금 상태 / 다음 계획
 
+- 2026-10-01: **Lojipsa 앱 코드는 안 건드림** — 채용 준비용 외부 프로필 3곳(GitHub 계정, LinkedIn,
+  s4ngg-portfolio 사이트)을 "AI로 딸깍 만든 느낌" 없애는 방향으로 정리. 참고로 남겨둠:
+  - GitHub(`s4ngg/s4ngg` 프로필 README): 이모지 불릿 나열(🔭🤖⚙️🌱📫) 템플릿 패턴 제거 →
+    한 문장 포지셔닝 + "지금 하고 있는 일"(실제 열린 이슈) + 프로젝트별 수치 기반 차별점(TFT-gogo
+    PR 감사 96%/79% 등) + GitHub stats 카드로 재구성. 계정 bio/website/hireable 필드가 비어있던
+    것도 채움. 핀 고정 3개 포함 전체 19개 레포 설명/토픽 정리, 내용 없는 빈 레포 2개
+    (lostark-gitops, lostark-front) 삭제.
+  - LinkedIn: 헤드라인이 비어 있어서 "남서울대학교 학생"으로 자동 표시되던 걸 발견해 전문 분야
+    헤드라인으로 채움. 소개글 리듬 다듬고, 프로젝트 3개(Lojipsa/TFT-gogo/AllPick) 썸네일을 깨진
+    링크 아이콘에서 실제 스크린샷으로 교체.
+  - `s4ngg-portfolio`(홈페이지): 기술 스택 섹션(Backend/Frontend/Data&Infra/AI&Collaboration)
+    신설, 프로젝트 카드 3개에 "배운 점/아쉬운 점" 한 줄 추가 — Lojipsa 카드는 바로 아래 적힌
+    모바일 사이드바 미해결 이슈를 그대로 인용함(고쳐지면 이 문구도 같이 수정할 것). 세미나
+    강사님 사이트(kimnoanoa.github.io/KIMNOAH) 참고해서 배경이미지 히어로도 로컬 프리뷰로
+    실험해봤지만, 보유한 인물사진이 세로형이라 크롭이 안 어울려서 미채택.
+  - 배포 점검 중 GitHub 저장소(`s4ngg-portfolio`)의 `homepage` 필드가 잘못된 URL
+    (`s4ngg-portfolio.vercel.app`, "-main" 누락)로 돼 있던 걸 발견해 실제 주소
+    (`s4ngg-portfolio-main.vercel.app`)로 수정. Vercel/GitHub Pages 이중 배포 자체는 둘 다
+    정상 작동 중이었음 — 배포가 깨졌던 게 아니라 기록된 URL만 틀렸던 것.
 - 2026-09-29: 공개 홈 에이전트 소개 화면을 main에 머지·푸시해서 **배포함**(Vercel 자동 배포,
   프론트엔드만이라 추가 비용 없음). 배포 전 로컬에서 850px 폭 실사용 테스트 중, PLAYER TOOLS
   카드 그리드가 `sm:grid-cols-2`(뷰포트 기준 640px)라 사이드바(260px) 뺀 실제 콘텐츠 폭이
