@@ -110,6 +110,13 @@ Slack 알림 에이전트 (스케줄러 있음, `/admin/*`):
     소유권 검증 → `WorkoutKnowledge`(id=1 단일 로우, admin 편집) 배경지식 로드 → 프롬프트 조립 →
     `AnthropicClient.complete()`)
   - 계획 파일: `C:\Users\s4ngg\.claude\plans\glittery-cuddling-scone.md` (설계 근거/대안 포함)
+  - **로컬에서 전체 플로우 실제 HTTP 호출로 검증 완료**(공개 계산기, 루틴 생성/조회/수정/삭제,
+    AI 피드백 요청, 소유권 스코프 — 다른 유저 토큰으로 타인 루틴 조회/삭제/피드백 시도 시 전부
+    404 확인). 이 과정에서 실제 버그 1건 발견·수정 — `deleteRoutine`/`updateRoutine`이 derived
+    delete 쿼리(`deleteByRoutineId`)를 트랜잭션 없이 호출해서 DELETE/PUT이 500으로 터지던 문제,
+    `@Transactional` 추가로 해결(`TROUBLESHOOTING.md` #13). AI 피드백 응답이 `WorkoutKnowledge`에
+    넣어둔 "48시간 휴식", "8~12회 반복" 같은 구체적 수치를 그대로 인용하는 것까지 확인해서,
+    배경지식 주입이 실제로 모델 답변에 반영되고 있음을 검증했다.
   - **배포 상태**: 프론트엔드는 push 즉시 Vercel 자동 재배포라 `lojipsa.com/tools/calorie`,
     `/my/workout`이 이미 라이브. **백엔드(EC2)는 의도적으로 안 건드림** — 이 프로젝트 배포 규칙상
     push만으로는 백엔드가 절대 안 바뀌고, 위 "가장 중요한 운영 제약" 절차를 수동으로 밟아야 한다.

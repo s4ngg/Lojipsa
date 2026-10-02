@@ -423,3 +423,43 @@ thinking-only 응답을 내는 걸 확인하고, 이 앱에서 이미 안정적�
 데이터에 따라 목표가 현재 레벨보다 낮아지는 앞뒤 안 맞는 시나리오가 될 수 있어서, 항상 현재보다
 높은 목표 레벨을 명시하도록 고쳤다. Claude API가 항상 text 블록만 준다고 가정하면 안 된다는 걸
 실제 트래픽으로 확인한 사례였다.
+
+---
+
+## 13) 운동 루틴 수정/삭제가 500으로 터짐 — derived delete 쿼리에 트랜잭션이 없었다
+
+**문제 상황**
+
+새로 만든 "운동+식단" 테마의 `WorkoutService`를 배포 전에 로컬에서 실제 HTTP 요청으로
+직접 검증했다. 루틴 생성(POST)과 AI 피드백 요청(POST)은 정상이었는데, 루틴 삭제(DELETE)를
+호출하니 500이 돌아왔고 — 더 심각한 건 응답 코드만 보지 않고 다시 목록을 조회(GET)해서
+실제로 지워졌는지 확인했더니, 삭제가 전혀 반영되지 않고 루틴이 그대로 남아있었다. 응답
+코드만 확인하는 테스트였다면 500이라는 것만 알고 끝났을 텐데, 상태를 다시 조회해서 비교한
+덕분에 "에러만 나고 끝" vs "일부만 지워지고 일관성이 깨짐"을 구분할 수 있었다.
+
+**원인 분석**
+
+백엔드 로그에서 `jakarta.persistence.TransactionRequiredException: No EntityManager with
+actual transaction available for current thread - cannot reliably process 'remove' call`를
+확인했다. `WorkoutService.deleteRoutine()`은 `WorkoutExerciseRepository.deleteByRoutineId()`
+(메서드 이름으로 생성되는 derived delete 쿼리)를 호출하는데, 이 방식의 delete는 Spring Data가
+내부적으로 "대상을 조회한 뒤 각각 `entityManager.remove()`를 호출"하는 식으로 동작해서,
+`save()`/`findById()`처럼 `SimpleJpaRepository`가 메서드 단위로 자동으로 걸어주는 트랜잭션에
+기대지 못하고 호출부(서비스 메서드)에 열린 트랜잭션이 있어야 한다. `WorkoutService`의 다른
+메서드들은 전부 단일 `save()`/`findById()` 호출만 하고 있어서 이 문제를 비켜갔던 것뿐이었고,
+`updateRoutine()`도 똑같이 `deleteByRoutineId()`를 호출하고 있어서 동일한 버그를 안고
+있었다(다만 PUT 테스트는 이 버그를 고친 뒤에 돌려서, 고치기 전 상태로는 재현해보지 않았다).
+
+**해결 방법**
+
+`HomeworkService`/`RosterService`에서 이미 쓰고 있던 것과 동일하게, `deleteRoutine()`과
+`updateRoutine()`에 `org.springframework.transaction.annotation.Transactional`을 붙였다.
+
+**결과**
+
+같은 루틴으로 PUT(수정)·DELETE 둘 다 재테스트: 수정 전에는 DELETE가 500 + 데이터 그대로,
+수정 후에는 DELETE가 204를 반환하고 재조회 시 실제로 빈 배열이 돌아오는 것까지 확인했다.
+API 응답 코드만 보고 넘어가지 않고 직접 재조회로 실제 상태를 검증한 덕분에 찾은 버그 —
+이 패턴(단일 CRUD 호출만 하던 서비스에 derived delete 쿼리를 섞어 쓰는 경우)은 앞으로
+새 도메인을 만들 때마다 반복될 수 있어서, `@Transactional` 필요 여부를 `deleteBy*`/
+`updateBy*` 같은 derived 쿼리 메서드를 쓸 때마다 체크리스트로 남겨둔다.
