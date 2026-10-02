@@ -100,6 +100,16 @@ Slack 알림 에이전트 (스케줄러 있음, `/admin/*`):
 
 ## 지금 상태 / 다음 계획
 
+- 2026-10-03: **백엔드 재배포함(재료 시세 5분 캐시, `MaterialService`).** 사용자 명시 승인 후 진행. 이번엔
+  AWS CLI 세션이 만료돼 있어(콘솔도 미로그인) 인스턴스 업사이즈 없이 **로컬에서 `./gradlew bootJar` →
+  jar를 scp → 서버에서 런타임 전용 이미지(`eclipse-temurin:21-jre` + jar)로 `deploy-backend:latest`를
+  빌드 → `docker compose -f deploy/docker-compose.prod.yml up -d --no-build`** 로 교체했다. 이 방식은
+  EC2에서 Gradle을 돌리지 않아 #11 문제가 없고 IP도 안 바뀐다(Route 53 갱신 불필요). 롤백:
+  `docker tag deploy-backend:prev-20261003 deploy-backend:latest` 후 같은 compose 명령. 서버 `~/Lojipsa`
+  는 `git pull`로 최신 유지. 운영 전후 성능 수치는 `TROUBLESHOOTING.md` #15 참고. 알려진 사항: 자정 직후
+  거래소 일별 통계의 당일 값이 0으로 내려올 수 있어(`currentPrice 0.0`) 그 구간엔 등락률이 -100%로 보인다 —
+  기존에도 있던 동작이라 이번엔 손대지 않았고 다음 개선 후보.
+
 - 2026-10-02: **운동+식단 테마를 Lojipsa에서 완전히 제거하고 별도 프로젝트
   [fitlog](https://github.com/s4ngg/fitlog)로 이전함.** 로컬 경로
   `C:\Users\s4ngg\Desktop\fitlog` (Lojipsa `C:\Users\s4ngg\Desktop\new`와 형제 폴더).
