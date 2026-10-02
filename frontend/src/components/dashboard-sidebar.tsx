@@ -8,6 +8,8 @@ import {
   Calendar,
   Coins,
   Compass,
+  Dumbbell,
+  Flame,
   House,
   Megaphone,
   Package,
@@ -36,6 +38,8 @@ const toolItems: NavItem[] = [
   { label: '보석 시세 관리', icon: Boxes, href: '/admin/gems' },
   { label: '원정대 방향성 관리', icon: Compass, href: '/admin/direction-knowledge' },
   { label: '재련 계산', icon: Sword, href: '/tools/reforge', access: 'public' },
+  { label: '칼로리·BMR 계산기', icon: Flame, href: '/tools/calorie', access: 'public' },
+  { label: '운동 배경지식 관리', icon: Dumbbell, href: '/admin/workout-knowledge' },
 ]
 
 const infoItems: NavItem[] = [
@@ -49,6 +53,7 @@ const accountItems: NavItem[] = [
   { label: '주간 골드 계산', icon: Wallet, href: '/my/weekly-gold', access: 'public' },
   { label: '숙제 관리', icon: Calendar, href: '/my/homework', access: 'public' },
   { label: '원정대 방향성', icon: Compass, href: '/my/direction', access: 'public' },
+  { label: '운동 루틴 피드백', icon: Dumbbell, href: '/my/workout', access: 'public' },
 ]
 
 const homeItems: NavItem[] = [
