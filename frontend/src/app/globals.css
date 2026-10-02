@@ -34,6 +34,12 @@
   --color-down: var(--down);
   --color-gold-bound: var(--gold-bound);
   --color-gold-tradable: var(--gold-tradable);
+  --color-muscle-chest: var(--muscle-chest);
+  --color-muscle-back: var(--muscle-back);
+  --color-muscle-legs: var(--muscle-legs);
+  --color-muscle-shoulders: var(--muscle-shoulders);
+  --color-muscle-arms: var(--muscle-arms);
+  --color-muscle-core: var(--muscle-core);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --radius-sm: calc(var(--radius) - 2px);
@@ -62,6 +68,12 @@
   --down: oklch(0.68 0.19 22);
   --gold-bound: oklch(0.78 0.15 75);
   --gold-tradable: oklch(0.8 0.16 195);
+  --muscle-chest: oklch(0.72 0.13 210);
+  --muscle-back: oklch(0.74 0.16 150);
+  --muscle-legs: oklch(0.78 0.15 75);
+  --muscle-shoulders: oklch(0.75 0.15 300);
+  --muscle-arms: oklch(0.75 0.17 45);
+  --muscle-core: oklch(0.8 0.16 195);
   --border: oklch(0.3 0.014 250);
   --input: oklch(0.3 0.014 250);
   --ring: oklch(0.72 0.13 210);

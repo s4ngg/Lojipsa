@@ -32,6 +32,82 @@ const MUSCLE_GROUP_OPTIONS = [
   { id: 'CORE', label: '코어' },
 ]
 
+// Tailwind v4는 클래스명을 정적으로 스캔하므로, 템플릿 리터럴로 조합하지 않고 완전한
+// 문자열을 그대로 매핑해둔다.
+const MUSCLE_GROUP_BADGE_CLASS: Record<string, string> = {
+  CHEST: 'bg-muscle-chest/10 text-muscle-chest',
+  BACK: 'bg-muscle-back/10 text-muscle-back',
+  LEGS: 'bg-muscle-legs/10 text-muscle-legs',
+  SHOULDERS: 'bg-muscle-shoulders/10 text-muscle-shoulders',
+  ARMS: 'bg-muscle-arms/10 text-muscle-arms',
+  CORE: 'bg-muscle-core/10 text-muscle-core',
+}
+
+const MUSCLE_GROUP_DOT_CLASS: Record<string, string> = {
+  CHEST: 'bg-muscle-chest',
+  BACK: 'bg-muscle-back',
+  LEGS: 'bg-muscle-legs',
+  SHOULDERS: 'bg-muscle-shoulders',
+  ARMS: 'bg-muscle-arms',
+  CORE: 'bg-muscle-core',
+}
+
+function MuscleGroupBadge({ groupId }: { groupId: string }) {
+  const label = MUSCLE_GROUP_OPTIONS.find((g) => g.id === groupId)?.label ?? groupId
+  const badgeClass = MUSCLE_GROUP_BADGE_CLASS[groupId] ?? 'bg-muted text-muted-foreground'
+  return (
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10.5px] font-medium ${badgeClass}`}>
+      {label}
+    </span>
+  )
+}
+
+function WeekMuscleGrid({ exercises }: { exercises: WorkoutRoutine['exercises'] }) {
+  const groupsPresent = MUSCLE_GROUP_OPTIONS.filter((g) => exercises.some((ex) => ex.muscleGroup === g.id))
+  if (groupsPresent.length === 0) return null
+
+  return (
+    <div className="overflow-hidden rounded-md border border-border">
+      <table className="w-full border-collapse text-[11px]">
+        <thead>
+          <tr className="text-muted-foreground">
+            <th className="px-2 py-1.5 text-left font-medium">근육군</th>
+            {DAY_OPTIONS.map((d) => (
+              <th key={d.id} className="px-1.5 py-1.5 text-center font-medium">
+                {d.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {groupsPresent.map((group) => (
+            <tr key={group.id} className="border-t border-border/60">
+              <td className="px-2 py-1.5">
+                <span className="inline-flex items-center gap-1.5 font-medium">
+                  <span className={`size-1.5 shrink-0 rounded-full ${MUSCLE_GROUP_DOT_CLASS[group.id]}`} />
+                  {group.label}
+                </span>
+              </td>
+              {DAY_OPTIONS.map((d) => {
+                const trained = exercises.some((ex) => ex.muscleGroup === group.id && ex.dayOfWeek === d.id)
+                return (
+                  <td key={d.id} className="px-1.5 py-1.5">
+                    <span
+                      className={`mx-auto block size-2.5 rounded-full ${
+                        trained ? MUSCLE_GROUP_DOT_CLASS[group.id] : 'bg-border'
+                      }`}
+                    />
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 let nextRowId = 1
 
 type ExerciseRow = WorkoutExerciseInput & { rowId: number }
@@ -343,14 +419,19 @@ export function WorkoutView() {
               </div>
             </div>
 
-            <ul className="flex flex-col gap-1 text-[12.5px] text-muted-foreground">
+            <WeekMuscleGrid exercises={routine.exercises} />
+
+            <ul className="flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
               {routine.exercises.map((ex) => {
                 const dayLabel = DAY_OPTIONS.find((d) => d.id === ex.dayOfWeek)?.label ?? ex.dayOfWeek
-                const groupLabel = MUSCLE_GROUP_OPTIONS.find((g) => g.id === ex.muscleGroup)?.label ?? ex.muscleGroup
                 return (
-                  <li key={ex.id} className="font-mono tabular-nums">
-                    {dayLabel}요일 · [{groupLabel}] {ex.exerciseName} {ex.sets}세트 x {ex.reps}회
-                    {ex.weightKg ? ` (${ex.weightKg}kg)` : ''}
+                  <li key={ex.id} className="flex items-center gap-2">
+                    <span className="font-mono tabular-nums">{dayLabel}요일</span>
+                    <MuscleGroupBadge groupId={ex.muscleGroup} />
+                    <span className="font-mono tabular-nums">
+                      {ex.exerciseName} {ex.sets}세트 x {ex.reps}회
+                      {ex.weightKg ? ` (${ex.weightKg}kg)` : ''}
+                    </span>
                   </li>
                 )
               })}
