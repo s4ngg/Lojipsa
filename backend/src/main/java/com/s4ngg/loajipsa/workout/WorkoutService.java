@@ -4,6 +4,7 @@ import com.s4ngg.loajipsa.anthropic.AnthropicClient;
 import com.s4ngg.loajipsa.auth.DiscordUser;
 import com.s4ngg.loajipsa.auth.DiscordUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -56,6 +57,7 @@ public class WorkoutService {
 		return toResponse(routine);
 	}
 
+	@Transactional
 	public WorkoutRoutineResponse updateRoutine(String discordId, Long routineId, WorkoutRoutineRequest request) {
 		DiscordUser user = findUser(discordId);
 		WorkoutRoutine routine = findOwnedRoutine(user, routineId);
@@ -70,6 +72,7 @@ public class WorkoutService {
 		return toResponse(routine);
 	}
 
+	@Transactional
 	public void deleteRoutine(String discordId, Long routineId) {
 		DiscordUser user = findUser(discordId);
 		WorkoutRoutine routine = findOwnedRoutine(user, routineId);
