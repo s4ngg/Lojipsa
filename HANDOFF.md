@@ -100,6 +100,10 @@ Slack 알림 에이전트 (스케줄러 있음, `/admin/*`):
 
 ## 지금 상태 / 다음 계획
 
+- 2026-10-03: **보석 시세(`GemService`)에도 캐시 적용·재배포함**(TTL 1분 — 경매장 최저가는 실시간에 가까워
+  재료 시세 5분과 다르게 잡음). 배포 방식·롤백은 바로 아래 항목과 동일, 롤백 이미지는
+  `deploy-backend:prev-materials-cache`. 운영 전후 수치는 `TROUBLESHOOTING.md` #16.
+
 - 2026-10-03: **백엔드 재배포함(재료 시세 5분 캐시, `MaterialService`).** 사용자 명시 승인 후 진행. 이번엔
   AWS CLI 세션이 만료돼 있어(콘솔도 미로그인) 인스턴스 업사이즈 없이 **로컬에서 `./gradlew bootJar` →
   jar를 scp → 서버에서 런타임 전용 이미지(`eclipse-temurin:21-jre` + jar)로 `deploy-backend:latest`를
