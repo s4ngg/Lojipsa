@@ -23,6 +23,9 @@ public class WorkoutExercise {
 	/** "MON".."SUN" */
 	private String dayOfWeek;
 
+	/** "CHEST", "BACK", "LEGS", "SHOULDERS", "ARMS", "CORE" — 사용자가 직접 선택한다(추측하지 않음). */
+	private String muscleGroup;
+
 	private String exerciseName;
 	private int sets;
 	private int reps;
@@ -32,10 +35,11 @@ public class WorkoutExercise {
 
 	private int orderIndex;
 
-	public WorkoutExercise(Long routineId, String dayOfWeek, String exerciseName, int sets, int reps,
-			Double weightKg, int orderIndex) {
+	public WorkoutExercise(Long routineId, String dayOfWeek, String muscleGroup, String exerciseName, int sets,
+			int reps, Double weightKg, int orderIndex) {
 		this.routineId = routineId;
 		this.dayOfWeek = dayOfWeek;
+		this.muscleGroup = muscleGroup;
 		this.exerciseName = exerciseName;
 		this.sets = sets;
 		this.reps = reps;

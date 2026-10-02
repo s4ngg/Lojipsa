@@ -553,6 +553,7 @@ export async function refreshMyRoster(token: string): Promise<RosterCharacter[]>
 
 export type WorkoutExerciseInput = {
   dayOfWeek: string
+  muscleGroup: string
   exerciseName: string
   sets: number
   reps: number

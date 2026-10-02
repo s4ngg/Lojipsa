@@ -23,12 +23,29 @@ const DAY_OPTIONS = [
   { id: 'SUN', label: '일' },
 ]
 
+const MUSCLE_GROUP_OPTIONS = [
+  { id: 'CHEST', label: '가슴' },
+  { id: 'BACK', label: '등' },
+  { id: 'LEGS', label: '하체' },
+  { id: 'SHOULDERS', label: '어깨' },
+  { id: 'ARMS', label: '팔' },
+  { id: 'CORE', label: '코어' },
+]
+
 let nextRowId = 1
 
 type ExerciseRow = WorkoutExerciseInput & { rowId: number }
 
 function emptyRow(): ExerciseRow {
-  return { rowId: nextRowId++, dayOfWeek: 'MON', exerciseName: '', sets: 3, reps: 10, weightKg: null }
+  return {
+    rowId: nextRowId++,
+    dayOfWeek: 'MON',
+    muscleGroup: 'CHEST',
+    exerciseName: '',
+    sets: 3,
+    reps: 10,
+    weightKg: null,
+  }
 }
 
 export function WorkoutView() {
@@ -194,6 +211,7 @@ export function WorkoutView() {
             <thead>
               <tr className="text-[11px] text-muted-foreground">
                 <th className="px-2 py-1.5 text-left font-medium">요일</th>
+                <th className="px-2 py-1.5 text-left font-medium">근육군</th>
                 <th className="px-2 py-1.5 text-left font-medium">운동명</th>
                 <th className="px-2 py-1.5 text-right font-medium">세트</th>
                 <th className="px-2 py-1.5 text-right font-medium">횟수</th>
@@ -213,6 +231,19 @@ export function WorkoutView() {
                       {DAY_OPTIONS.map((d) => (
                         <option key={d.id} value={d.id}>
                           {d.label}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-2 py-1.5">
+                    <select
+                      value={row.muscleGroup}
+                      onChange={(e) => updateRow(row.rowId, { muscleGroup: e.target.value })}
+                      className="bg-transparent text-[12px] outline-none"
+                    >
+                      {MUSCLE_GROUP_OPTIONS.map((g) => (
+                        <option key={g.id} value={g.id}>
+                          {g.label}
                         </option>
                       ))}
                     </select>
@@ -315,9 +346,10 @@ export function WorkoutView() {
             <ul className="flex flex-col gap-1 text-[12.5px] text-muted-foreground">
               {routine.exercises.map((ex) => {
                 const dayLabel = DAY_OPTIONS.find((d) => d.id === ex.dayOfWeek)?.label ?? ex.dayOfWeek
+                const groupLabel = MUSCLE_GROUP_OPTIONS.find((g) => g.id === ex.muscleGroup)?.label ?? ex.muscleGroup
                 return (
                   <li key={ex.id} className="font-mono tabular-nums">
-                    {dayLabel}요일 · {ex.exerciseName} {ex.sets}세트 x {ex.reps}회
+                    {dayLabel}요일 · [{groupLabel}] {ex.exerciseName} {ex.sets}세트 x {ex.reps}회
                     {ex.weightKg ? ` (${ex.weightKg}kg)` : ''}
                   </li>
                 )
