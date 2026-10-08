@@ -100,6 +100,19 @@ Slack 알림 에이전트 (스케줄러 있음, `/admin/*`):
 
 ## 지금 상태 / 다음 계획
 
+- 2026-10-08: **채용 서류/외부 프로필 정리 (Lojipsa 앱 코드는 안 건드림).**
+  - 포트폴리오(`s4ngg-portfolio`): 홈 히어로를 이름 헤드라인으로 변경, 챗봇 위젯(`assets/chat-widget.js`,
+    Render의 `portfolio-agent` API 호출) 제거(내용이 빈약하고 Render 무료 서버 콜드스타트 위험 + API CORS가
+    Vercel origin만 허용해 github.io에서 안 됐음). 공식 주소를 **`https://s4ngg.github.io` 하나로 통일**:
+    Vercel(`s4ngg-portfolio-main.vercel.app`)은 `vercel.json` 리다이렉트(307)로 github.io로 이동하게 둠
+    (이미 제출한 지원서 55건의 Vercel 링크가 안 깨지게). 포트폴리오 수정 후에는 `origin` push +
+    `scripts/sync-github-pages.sh` 실행해야 github.io에 반영됨(Vercel은 이동만 함).
+  - GitHub 프로필 README는 상단 핵심 수치 4칸 + 대표 프로젝트 표(Lojipsa/TFT-gogo/AllPick)로 재구성,
+    portfolio-agent(챗봇) 행 제거. `portfolio-agent` 저장소와 Render 서비스는 그대로 남아 있음(미사용).
+  - 이력서 PDF 생성 스크립트는 세션 임시 폴더에 있어서 이 저장소엔 없음. 최신 이력서에는 성능개선 수치(운영 서버
+    실측 포함)와 AllPick AI 서버 단독 개발이 반영돼 있고, 지원 서류는 공고별로 자기소개서만 바꿔 합본 PDF로 만든다.
+  - 잡코리아 이력서(RNo 30449573): 한 줄 소개·자기소개서 3개·프로젝트 3개(인턴·대외활동 칸)·스킬 19개로 갱신,
+    두 번째(빈) 이력서는 삭제됨. 포트폴리오 링크는 아직 Vercel 주소(리다이렉트로 동작).
 - 2026-10-03: **보석 시세(`GemService`)에도 캐시 적용·재배포함**(TTL 1분 — 경매장 최저가는 실시간에 가까워
   재료 시세 5분과 다르게 잡음). 배포 방식·롤백은 바로 아래 항목과 동일, 롤백 이미지는
   `deploy-backend:prev-materials-cache`. 운영 전후 수치는 `TROUBLESHOOTING.md` #16.
